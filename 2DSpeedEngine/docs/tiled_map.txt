@@ -1,0 +1,6 @@
+To make tiled map running you need to:
+ - create a new map
+ - change in the top menu Karte->Karteneingenschaften->Kachelebenenformat to Base64 gzip
+ - open tmx as xml file in a text editor and add 'width="1" height="1"' to every objectgroup tag
+ - copy map to res/maps folder
+ - copy tileset resources with relative path to res folder
