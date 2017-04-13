@@ -12,7 +12,6 @@ import org.newdawn.slick.state.StateBasedGame;
 public class Menu extends BasicGameState
 {
 	int myIndex;
-	int timeout = 5;
 	int mPosX = 0;
 	int mPosY = 0;
 	String buttonClicked = "none";
@@ -47,17 +46,6 @@ public class Menu extends BasicGameState
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
 	{
-		// check if the timeout is over.
-		timeout = timeout - delta;
-		if (timeout <= 0)
-		{
-			// stuff to do only and regular 200 times per second goes here
-			timeout = 5;
-			
-			
-		}
-		
-		// stuff to do all the time goes here
 		if (buttonClicked == "play")
 		{
 			buttonClicked = "none";
