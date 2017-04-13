@@ -19,6 +19,12 @@ public class Momentum
 		return this;
 	}
 	
+	public float getAngle()
+	{
+		// alpha = arcsin(y/sqrt(x²+y²))
+		return (float)Math.toDegrees(Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir)));
+	}
+	
 	// Getter und Setter:
 	
 	public float getxDir() 
