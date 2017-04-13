@@ -18,15 +18,15 @@ public class SpeedObj
 		yPos = Run.screenHeight/2;
 	}
 
-	public boolean renderObj (Graphics g)
+	public void renderObj (Graphics g)
 	{
-		if (xPos-sizeX < 0 || xPos+sizeX > Run.screenWidth || yPos-sizeY < 0 || yPos+sizeY > Run.screenHeight)
-		{
-			return false;
-		}
+		//if (xPos-sizeX < 0 || xPos+sizeX > Run.screenWidth || yPos-sizeY < 0 || yPos+sizeY > Run.screenHeight)
+		//{
+		//	return false;
+		//}
 		g.setColor(Color.black);
 		g.fillRect(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
-		return true;
+		//return true;
 	}
 	
 	public void updatePosition(int delta)
