@@ -1,5 +1,6 @@
 package game;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -40,11 +41,13 @@ public class SpeedObj
 		}
 	}
 	
-	public Momentum accelerateToPosition (int x, int y, int delta)
+	public void accelerateToPosition (int x, int y, int delta)
 	{
 		// TODO balance acceleration-rate in this method
-		// TODO maybe physics bug?
-		return new Momentum((myMomentum.getxDir()+(((float)x-xPos)/100000))*delta/5, (myMomentum.getyDir()+(((float)y-yPos)/100000))*delta/5);
+		// TODO maybe physics bug? --> resolved?
+		// TODO add difficulty which influences the speed factor --> add factor
+		int factor = 100000;
+		myMomentum.addToMomentum(new Momentum((x-this.getxPos())*delta/factor, (y-this.getyPos())*delta/factor));
 	}
 	
 	public void calcNewMomentum(String side)

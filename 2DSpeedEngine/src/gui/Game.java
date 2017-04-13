@@ -30,8 +30,11 @@ public class Game extends BasicGameState
 		player = new SpeedObj();
 		map = new TiledMap("res/maps/basic_speedmap.tmx");
 		//TODO use this functions to get the collision property of the place where the palyer is
-		System.out.println(map.getTileId(1, 2, 0));
-		System.out.println(map.getTileProperty(61, "collision", "notFound"));
+		System.out.println(map.getTileId(5, 5, 0));
+		System.out.println(map.getTileProperty(157, "collision", "notFound"));
+		// id 61 == false
+		// id 157 == true
+		System.out.println("player x: " + player.getxPos() + "\nPlayer y: " + player.getyPos());
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -49,6 +52,8 @@ public class Game extends BasicGameState
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
 		
+		System.out.println("player x: " + player.getMyMomentum().getxDir() + "\t|\tPlayer y: " + player.getMyMomentum().getyDir());
+		
 		// inputhandling:
 		input = gc.getInput();
 		
@@ -61,7 +66,7 @@ public class Game extends BasicGameState
 		
 		if (input.isMouseButtonDown(0))
 		{
-			player.setMyMomentum(player.accelerateToPosition(mPosX, Run.screenHeight-mPosY, delta));
+			player.accelerateToPosition(mPosX, Run.screenHeight-mPosY, delta);
 		}
 		
 		player.updatePosition(delta);

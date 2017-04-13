@@ -12,6 +12,12 @@ public class Momentum
 		setyDir(y);
 	}
 
+	public Momentum addToMomentum(Momentum m)
+	{
+		xDir = xDir + m.getxDir();
+		yDir = yDir + m.getyDir();
+		return this;
+	}
 	
 	// Getter und Setter:
 	
