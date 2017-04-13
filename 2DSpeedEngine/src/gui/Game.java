@@ -52,8 +52,6 @@ public class Game extends BasicGameState
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
 		
-		System.out.println("player x: " + player.getMyMomentum().getxDir() + "\t|\tPlayer y: " + player.getMyMomentum().getyDir());
-		
 		// inputhandling:
 		input = gc.getInput();
 		
