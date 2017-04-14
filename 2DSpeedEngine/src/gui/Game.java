@@ -65,12 +65,15 @@ public class Game extends BasicGameState
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
 		
+		
 		//collision:
-		if (map.getTileProperty(map.getTileId((int)player.getxPos()/48, (int)player.getyPos()/24, 0), "collision", "notFound") == "true")
+		// TODO make this work. get Tile Pos from the playerobj. dont know what im doing here :D 
+		int[] tilePos = player.getTilePos();
+		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == "true")
 		{
 			collisiondebug = true;
 		}
-		if (map.getTileProperty(map.getTileId((int)player.getxPos()/48, (int)player.getyPos()/24, 0), "collision", "notFound") == "false")
+		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == "false")
 		{
 			collisiondebug = false;
 		}
