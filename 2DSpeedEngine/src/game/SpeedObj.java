@@ -1,6 +1,5 @@
 package game;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import gui.Run;
@@ -24,7 +23,7 @@ public class SpeedObj
 		//{
 		//	return false;
 		//}
-		g.setColor(Color.black);
+		//g.setColor(Color.black);
 		g.fillRect(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
 		//return true;
 	}
