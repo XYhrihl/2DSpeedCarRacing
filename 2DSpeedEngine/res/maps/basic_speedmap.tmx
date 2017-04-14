@@ -11,7 +11,7 @@
    <properties>
     <property name="collision" value="true"/>
    </properties>
-   <objectgroup draworder="index">
+   <objectgroup draworder="index" width="1" height="1">
     <object id="1" x="0" y="0" width="48" height="24"/>
     <object id="2" x="0" y="0" width="48" height="24"/>
    </objectgroup>
