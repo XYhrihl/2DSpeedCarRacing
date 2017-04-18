@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="45" tilewidth="48" tileheight="24" nextobjectid="4">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="45" tilewidth="48" tileheight="24" backgroundcolor="#64afff" nextobjectid="4">
  <tileset firstgid="1" name="Tileset" tilewidth="48" tileheight="24" tilecount="240" columns="12">
   <image source="../Tiled-Resources/part2_tileset.png" width="576" height="480"/>
   <tile id="60">
    <properties>
-    <property name="collision" type="bool" value="false"/>
+    <property name="collision" value="false"/>
    </properties>
   </tile>
   <tile id="156">
    <properties>
-    <property name="collision" type="bool" value="true"/>
+    <property name="collision" value="true"/>
    </properties>
    <objectgroup draworder="index" width="1" height="1">
     <object id="1" x="0" y="0" width="48" height="24"/>
@@ -19,7 +19,7 @@
  </tileset>
  <layer name="TileLayer" width="40" height="45">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3ZMQrAIAwFUC/WS7p7104uEomkSfzaP/xFavIMpSCtpZTqkBaUWS8k3zOkCWtaLHtWatL3P5+1Fn300XemL+JM9NGH6NP20Uefp69tzMzVc4Jv9T4WcY/TfNIz2nvhFa1Pn8m4nvXNtvrQ54fuy8qKL2tWt86PPgyf1sta06tulA99fvTd7ZPqWnplzo++u3zR/4C+BN33An37/K4gHAAA
+   H4sIAAAAAAAAC+3PQQ7AIAgFUS7mUblr94aE+lutlVnMRqM83MycHtW6orMs5c2dP/HV86l/4cOH75++GTvhw7ejb5UZH76v29V1ki+6j969XTYHX03fqvDhq+KbsSc+fPjGfcosfPhUH+ldhwWf9iAcAAA=
   </data>
  </layer>
 </map>

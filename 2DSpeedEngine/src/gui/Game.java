@@ -1,6 +1,7 @@
 package gui;
 
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -19,6 +20,7 @@ public class Game extends BasicGameState
 	private SpeedObj player;
 	private Input input;
 	private TiledMap map;
+	private boolean collisiondebug = false;
 	
 	public Game (int index)
 	{
@@ -44,6 +46,14 @@ public class Game extends BasicGameState
 	{
 		map.render(0, 0);
 		
+		if (collisiondebug == true)
+		{
+			g.setColor(Color.red);
+		}
+		else
+		{
+			g.setColor(Color.black);
+		}
 		player.renderObj(g);
 		
 		g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
@@ -55,8 +65,17 @@ public class Game extends BasicGameState
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
 		
-		//debug:
-		System.out.println(map.getTileId((int) (player.getxPos()/48), (int) (player.getyPos()/24), 0));
+		
+		//collision:
+		int[] tilePos = player.getTilePos();
+		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+		{
+			collisiondebug = true;
+		}
+		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(61, "collision", "xxx"))
+		{
+			collisiondebug = false;
+		}
 		
 		// inputhandling:
 		input = gc.getInput();
