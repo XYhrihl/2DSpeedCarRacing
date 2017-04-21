@@ -46,13 +46,13 @@ public class Game extends BasicGameState
 	{
 		map.render(0, 0);
 		
-		if (collisiondebug == true)
+		if (player.checkCollisionstate(map) == false)
 		{
-			g.setColor(Color.red);
+			g.setColor(Color.black);
 		}
 		else
 		{
-			g.setColor(Color.black);
+			g.setColor(Color.red);
 		}
 		player.renderObj(g);
 		
@@ -64,19 +64,7 @@ public class Game extends BasicGameState
 	{
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
-		
-		
-		//collision:
-		int[] tilePos = player.getTilePos();
-		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
-		{
-			collisiondebug = true;
-		}
-		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(61, "collision", "xxx"))
-		{
-			collisiondebug = false;
-		}
-		
+				
 		// inputhandling:
 		input = gc.getInput();
 		

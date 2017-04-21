@@ -1,6 +1,7 @@
 package game;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.tiled.TiledMap;
 
 import gui.Run;
 
@@ -30,10 +31,10 @@ public class SpeedObj
 	{
 		xPos = xPos + (myMomentum.getxDir()*delta/5);
 		yPos = yPos + (myMomentum.getyDir()*delta/5);
-		String collisionstate = checkForCollision();
-		if (collisionstate!="none")
+		String windowExit = checkForWindowExit();
+		if (windowExit!="none")
 		{
-			calcNewMomentum(collisionstate);
+			calcNewMomentum(windowExit);
 		}
 	}
 	
@@ -65,7 +66,7 @@ public class SpeedObj
 		}
 	}
 	
-	public String checkForCollision()
+	public String checkForWindowExit()
 	{
 		if (xPos-sizeX < 0)
 		{
@@ -86,6 +87,19 @@ public class SpeedObj
 		else
 		{
 			return "none";
+		}
+	}
+	
+	public boolean checkCollisionstate(TiledMap map)
+	{
+		int[] tilePos = this.getTilePos();
+		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 	
