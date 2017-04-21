@@ -1,6 +1,7 @@
 package game;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.tiled.TiledMap;
 
 import gui.Run;
@@ -11,13 +12,15 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 20;
+	// TODO use shape to calculate the hitbox
+	private Shape hitbox;
 	
 	public SpeedObj()
 	{
 		setMyMomentum(new Momentum(0,0));
 		xPos = Run.screenWidth/2;
 		yPos = Run.screenHeight/2;
-		// TODO init TilePos
+		// TODO init TilePos, get the pos from the maps starting position
 		xTile = 10;
 		yTile = 10;
 	}
@@ -48,8 +51,7 @@ public class SpeedObj
 	public void accelerateToPosition (int x, int y, int delta)
 	{
 		// TODO balance acceleration-rate in this method
-		// TODO maybe physics bug? --> resolved?
-		// TODO add difficulty which influences the speed factor --> add factor
+		// TODO add difficulty which influences the speed factor
 		int factor = 100000;
 		myMomentum.addToMomentum(new Momentum((x-this.getxPos())*delta/factor, (y-this.getyPos())*delta/factor));
 	}
@@ -92,6 +94,8 @@ public class SpeedObj
 	
 	public boolean checkCollisionstate(TiledMap map)
 	{
+		// id 61 == false
+		// id 157 == true
 		int[] tilePos = this.getTilePos();
 		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
 		{

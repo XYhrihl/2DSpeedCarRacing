@@ -21,6 +21,7 @@ public class Momentum
 	
 	public float getAngle()
 	{
+		// TODO replace movedirection with direction to the mouse (maybe move to speedobj class)
 		// alpha = arcsin(y/sqrt(x²+y²))
 		return (float)Math.toDegrees(Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir)));
 	}

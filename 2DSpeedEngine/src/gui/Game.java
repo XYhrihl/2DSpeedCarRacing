@@ -20,7 +20,6 @@ public class Game extends BasicGameState
 	private SpeedObj player;
 	private Input input;
 	private TiledMap map;
-	private boolean collisiondebug = false;
 	
 	public Game (int index)
 	{
@@ -31,15 +30,6 @@ public class Game extends BasicGameState
 	{
 		player = new SpeedObj();
 		map = new TiledMap("res/maps/basic_speedmap.tmx");
-		//TODO use this functions to get the collision property of the place where the player is
-		System.out.println(map.getTileId((int) (player.getxPos()/48), (int) (player.getyPos()/24), 0));
-		System.out.println("157: "+map.getTileProperty(157, "collision", "notFound"));
-		// TODO why is there 146??? --> change tiled map!
-		System.out.println("146: "+map.getTileProperty(146, "collision", "notFound"));
-		System.out.println("61: "+map.getTileProperty(61, "collision", "notFound"));
-		// id 61 == false
-		// id 157 == true
-		System.out.println("player x: " + player.getxPos() + "\nPlayer y: " + player.getyPos());
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
