@@ -1,39 +1,57 @@
 package game;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Transform;
+import org.newdawn.slick.tiled.TiledMap;
 
 import gui.Run;
 
 public class SpeedObj 
 {
-	private Momentum myMomentum;
+	private Shape hitbox;
+	
+	private float xMomentum, yMomentum;
 	private float xPos, yPos;
 	private int xTile, yTile;
-	private final float sizeX = 20, sizeY = 20;
+	private final float sizeX = 20, sizeY = 10;
+	
+	private float lastTransformRad = 0;
 	
 	public SpeedObj()
 	{
-		setMyMomentum(new Momentum(0,0));
+		// TODO init TilePos, get the pos from the maps starting position
 		xPos = Run.screenWidth/2;
 		yPos = Run.screenHeight/2;
-		// TODO init TilePos
 		xTile = 10;
 		yTile = 10;
+		
+		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
+		setMyMomentum(0,0);
 	}
 
 	public void renderObj (Graphics g)
 	{
-		g.fillRect(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
+		g.fill(hitbox);
 	}
 	
 	public void updatePosition(int delta)
 	{
-		xPos = xPos + (myMomentum.getxDir()*delta/5);
-		yPos = yPos + (myMomentum.getyDir()*delta/5);
-		String collisionstate = checkForCollision();
-		if (collisionstate!="none")
+		xPos = xPos + (xMomentum*delta/5);
+		yPos = yPos + (yMomentum*delta/5);
+		hitbox.setCenterX(xPos);
+		hitbox.setCenterY(yPos);
+		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
+		hitbox = hitbox.transform(Transform.createRotateTransform(getAngleRAD(), hitbox.getCenterX(), hitbox.getCenterY()));
+		lastTransformRad = getAngleRAD();
+		// TODO angle only works to the rigth side. angle to the left side is 90° off.
+		
+		String windowExit = checkForWindowExit();
+		if (windowExit!="none")
 		{
-			calcNewMomentum(collisionstate);
+			calcNewMomentum(windowExit);
 		}
 	}
 	
@@ -47,25 +65,38 @@ public class SpeedObj
 	public void accelerateToPosition (int x, int y, int delta)
 	{
 		// TODO balance acceleration-rate in this method
-		// TODO maybe physics bug? --> resolved?
-		// TODO add difficulty which influences the speed factor --> add factor
+		// TODO add difficulty which influences the speed factor
 		int factor = 100000;
-		myMomentum.addToMomentum(new Momentum((x-this.getxPos())*delta/factor, (y-this.getyPos())*delta/factor));
+		xMomentum = xMomentum + (x-this.getxPos())*delta/factor;
+		yMomentum = yMomentum + (y-this.getyPos())*delta/factor;
+	}
+	
+	public float getAngleRAD()
+	{
+		// alpha = arcsin(y/sqrt(x²+y²))
+		float xDir = xPos - Mouse.getX();
+		float yDir = yPos - Mouse.getY();
+		float angle = (float)Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir));
+		if (Float.isNaN(angle))
+		{
+			angle = 0;
+		}
+		return angle; 
 	}
 	
 	public void calcNewMomentum(String side)
 	{
 		if (side=="right" || side=="left")
 		{
-			myMomentum.setxDir(-myMomentum.getxDir());
+			xMomentum = -xMomentum;
 		}
 		if (side=="top" || side=="bot")
 		{
-			myMomentum.setyDir(-myMomentum.getyDir());
+			yMomentum = -yMomentum;
 		}
 	}
 	
-	public String checkForCollision()
+	public String checkForWindowExit()
 	{
 		if (xPos-sizeX < 0)
 		{
@@ -89,16 +120,37 @@ public class SpeedObj
 		}
 	}
 	
+	public boolean checkCollisionstate(TiledMap map)
+	{
+		// id 61 == false
+		// id 157 == true
+		int[] tilePos = this.getTilePos();
+		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	//Getter und Setter:
 	
-	public Momentum getMyMomentum() 
+	public float getxMomentum() 
 	{
-		return myMomentum;
+		return xMomentum;
+	}
+	
+	public float getyMomentum()
+	{
+		return yMomentum;
 	}
 
-	public void setMyMomentum(Momentum myMomentum) 
+	public void setMyMomentum(float x, float y) 
 	{
-		this.myMomentum = myMomentum;
+		this.xMomentum = x;
+		this.yMomentum = y;
 	}
 
 	public float getxPos() 
@@ -120,4 +172,5 @@ public class SpeedObj
 	{
 		this.yPos = yPos;
 	}
+	
 }
