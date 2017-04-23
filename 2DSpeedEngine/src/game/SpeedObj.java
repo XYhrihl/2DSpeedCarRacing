@@ -1,5 +1,6 @@
 package game;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -11,10 +12,11 @@ import gui.Run;
 public class SpeedObj 
 {
 	private Momentum myMomentum;
+	private Shape hitbox;
+	
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
-	private Shape hitbox;
 	private float lastTransformRad = 0;
 	
 	public SpeedObj()
@@ -41,8 +43,8 @@ public class SpeedObj
 		hitbox.setCenterX(xPos);
 		hitbox.setCenterY(yPos);
 		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
-		hitbox = hitbox.transform(Transform.createRotateTransform(myMomentum.getAngleRAD(), hitbox.getCenterX(), hitbox.getCenterY()));
-		lastTransformRad = myMomentum.getAngleRAD();
+		hitbox = hitbox.transform(Transform.createRotateTransform(getAngleRAD(), hitbox.getCenterX(), hitbox.getCenterY()));
+		lastTransformRad = getAngleRAD();
 		// TODO angle only works to the rigth side. angle to the left side is 90° off.
 		
 		String windowExit = checkForWindowExit();
@@ -65,6 +67,19 @@ public class SpeedObj
 		// TODO add difficulty which influences the speed factor
 		int factor = 100000;
 		myMomentum.addToMomentum(new Momentum((x-this.getxPos())*delta/factor, (y-this.getyPos())*delta/factor));
+	}
+	
+	public float getAngleRAD()
+	{
+		// alpha = arcsin(y/sqrt(x²+y²))
+		float xDir = xPos - Mouse.getX();
+		float yDir = yPos - Mouse.getY();
+		float angle = (float)Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir));
+		if (Float.isNaN(angle))
+		{
+			angle = 0;
+		}
+		return angle; 
 	}
 	
 	public void calcNewMomentum(String side)
