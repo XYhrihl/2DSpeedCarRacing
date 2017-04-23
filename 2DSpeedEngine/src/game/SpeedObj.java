@@ -11,12 +11,13 @@ import gui.Run;
 
 public class SpeedObj 
 {
-	private Momentum myMomentum;
 	private Shape hitbox;
 	
+	private float xMomentum, yMomentum;
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
+	
 	private float lastTransformRad = 0;
 	
 	public SpeedObj()
@@ -28,7 +29,7 @@ public class SpeedObj
 		yTile = 10;
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
-		setMyMomentum(new Momentum(0,0));
+		setMyMomentum(0,0);
 	}
 
 	public void renderObj (Graphics g)
@@ -38,8 +39,8 @@ public class SpeedObj
 	
 	public void updatePosition(int delta)
 	{
-		xPos = xPos + (myMomentum.getxDir()*delta/5);
-		yPos = yPos + (myMomentum.getyDir()*delta/5);
+		xPos = xPos + (xMomentum*delta/5);
+		yPos = yPos + (yMomentum*delta/5);
 		hitbox.setCenterX(xPos);
 		hitbox.setCenterY(yPos);
 		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
@@ -66,7 +67,8 @@ public class SpeedObj
 		// TODO balance acceleration-rate in this method
 		// TODO add difficulty which influences the speed factor
 		int factor = 100000;
-		myMomentum.addToMomentum(new Momentum((x-this.getxPos())*delta/factor, (y-this.getyPos())*delta/factor));
+		xMomentum = xMomentum + (x-this.getxPos())*delta/factor;
+		yMomentum = yMomentum + (y-this.getyPos())*delta/factor;
 	}
 	
 	public float getAngleRAD()
@@ -86,11 +88,11 @@ public class SpeedObj
 	{
 		if (side=="right" || side=="left")
 		{
-			myMomentum.setxDir(-myMomentum.getxDir());
+			xMomentum = -xMomentum;
 		}
 		if (side=="top" || side=="bot")
 		{
-			myMomentum.setyDir(-myMomentum.getyDir());
+			yMomentum = -yMomentum;
 		}
 	}
 	
@@ -135,14 +137,20 @@ public class SpeedObj
 	
 	//Getter und Setter:
 	
-	public Momentum getMyMomentum() 
+	public float getxMomentum() 
 	{
-		return myMomentum;
+		return xMomentum;
+	}
+	
+	public float getyMomentum()
+	{
+		return yMomentum;
 	}
 
-	public void setMyMomentum(Momentum myMomentum) 
+	public void setMyMomentum(float x, float y) 
 	{
-		this.myMomentum = myMomentum;
+		this.xMomentum = x;
+		this.yMomentum = y;
 	}
 
 	public float getxPos() 
