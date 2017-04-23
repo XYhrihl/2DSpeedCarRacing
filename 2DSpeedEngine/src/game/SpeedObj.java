@@ -46,7 +46,6 @@ public class SpeedObj
 		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
 		hitbox = hitbox.transform(Transform.createRotateTransform(getAngleRAD(), hitbox.getCenterX(), hitbox.getCenterY()));
 		lastTransformRad = getAngleRAD();
-		// TODO angle only works to the rigth side. angle to the left side is 90° off.
 		
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
@@ -75,11 +74,15 @@ public class SpeedObj
 	{
 		// alpha = arcsin(y/sqrt(x²+y²))
 		float xDir = xPos - Mouse.getX();
-		float yDir = yPos - Mouse.getY();
+		float yDir = Run.screenHeight-yPos - Mouse.getY();
 		float angle = (float)Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir));
 		if (Float.isNaN(angle))
 		{
 			angle = 0;
+		}
+		if (xDir > 0)
+		{
+			angle = -angle;
 		}
 		return angle; 
 	}
