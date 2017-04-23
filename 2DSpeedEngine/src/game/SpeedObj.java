@@ -1,7 +1,9 @@
 package game;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.tiled.TiledMap;
 
 import gui.Run;
@@ -11,29 +13,38 @@ public class SpeedObj
 	private Momentum myMomentum;
 	private float xPos, yPos;
 	private int xTile, yTile;
-	private final float sizeX = 20, sizeY = 20;
-	// TODO use shape to calculate the hitbox
+	private final float sizeX = 20, sizeY = 10;
 	private Shape hitbox;
+	private float lastTransformRad = 0;
 	
 	public SpeedObj()
 	{
-		setMyMomentum(new Momentum(0,0));
+		// TODO init TilePos, get the pos from the maps starting position
 		xPos = Run.screenWidth/2;
 		yPos = Run.screenHeight/2;
-		// TODO init TilePos, get the pos from the maps starting position
 		xTile = 10;
 		yTile = 10;
+		
+		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
+		setMyMomentum(new Momentum(0,0));
 	}
 
 	public void renderObj (Graphics g)
 	{
-		g.fillRect(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
+		g.fill(hitbox);
 	}
 	
 	public void updatePosition(int delta)
 	{
 		xPos = xPos + (myMomentum.getxDir()*delta/5);
 		yPos = yPos + (myMomentum.getyDir()*delta/5);
+		hitbox.setCenterX(xPos);
+		hitbox.setCenterY(yPos);
+		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
+		hitbox = hitbox.transform(Transform.createRotateTransform(myMomentum.getAngleRAD(), hitbox.getCenterX(), hitbox.getCenterY()));
+		lastTransformRad = myMomentum.getAngleRAD();
+		// TODO angle only works to the rigth side. angle to the left side is 90° off.
+		
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
 		{
@@ -138,4 +149,5 @@ public class SpeedObj
 	{
 		this.yPos = yPos;
 	}
+	
 }

@@ -19,11 +19,16 @@ public class Momentum
 		return this;
 	}
 	
-	public float getAngle()
+	public float getAngleRAD()
 	{
 		// TODO replace movedirection with direction to the mouse (maybe move to speedobj class)
 		// alpha = arcsin(y/sqrt(x²+y²))
-		return (float)Math.toDegrees(Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir)));
+		float angle = (float)Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir));
+		if (Float.isNaN(angle))
+		{
+			angle = 0;
+		}
+		return angle; 
 	}
 	
 	// Getter und Setter:
