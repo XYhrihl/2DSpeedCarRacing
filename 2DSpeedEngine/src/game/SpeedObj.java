@@ -1,6 +1,7 @@
 package game;
 
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -18,6 +19,16 @@ public class SpeedObj
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
 	
+	/*corner Points
+	 index | location
+	-------|-----------------
+	 0     | botcenter
+	 1     | topcenter
+	 2-5   | cornerPoint 1-4
+	*/
+	private float[] cornerX = new float[6];
+	private float[] cornerY = new float[6];
+	
 	private float lastTransformRad = 0;
 	
 	public SpeedObj()
@@ -29,6 +40,8 @@ public class SpeedObj
 		yTile = 10;
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
+		calculateHitboxCorner(getAngleRAD());
+		
 		setMyMomentum(0,0);
 	}
 
@@ -39,19 +52,39 @@ public class SpeedObj
 	
 	public void updatePosition(int delta)
 	{
+		float angle = getAngleRAD();
 		xPos = xPos + (xMomentum*delta/5);
 		yPos = yPos + (yMomentum*delta/5);
 		hitbox.setCenterX(xPos);
 		hitbox.setCenterY(yPos);
 		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
-		hitbox = hitbox.transform(Transform.createRotateTransform(getAngleRAD(), hitbox.getCenterX(), hitbox.getCenterY()));
-		lastTransformRad = getAngleRAD();
+		hitbox = hitbox.transform(Transform.createRotateTransform(angle, hitbox.getCenterX(), hitbox.getCenterY()));
+		calculateHitboxCorner(angle);
+		
+		lastTransformRad = angle;
 		
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
 		{
 			calcNewMomentum(windowExit);
 		}
+	}
+	
+	public void calculateHitboxCorner(float angle)
+	{
+		cornerX[0] = xPos - (float) (Math.sin(angle)*sizeY);
+		cornerY[0] = yPos + (float) (Math.cos(angle)*sizeY);
+		cornerX[1] = xPos + (float) (Math.sin(angle)*sizeY);
+		cornerY[1] = yPos - (float) (Math.cos(angle)*sizeY);
+		
+		cornerX[2] = cornerX[0] - (float) (Math.cos(angle)*sizeX);
+		cornerY[2] = cornerY[0] - (float) (Math.sin(angle)*sizeX);
+		cornerX[3] = cornerX[0] + (float) (Math.cos(angle)*sizeX);
+		cornerY[3] = cornerY[0] + (float) (Math.sin(angle)*sizeX);
+		cornerX[4] = cornerX[1] - (float) (Math.cos(angle)*sizeX);
+		cornerY[4] = cornerY[1] - (float) (Math.sin(angle)*sizeX);
+		cornerX[5] = cornerX[1] + (float) (Math.cos(angle)*sizeX);
+		cornerY[5] = cornerY[1] + (float) (Math.sin(angle)*sizeX);
 	}
 	
 	public int[] getTilePos()
