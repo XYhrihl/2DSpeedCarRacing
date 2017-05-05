@@ -18,6 +18,16 @@ public class SpeedObj
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
 	
+	/*corner Points
+	 index | location
+	-------|-----------------
+	 0     | botcenter
+	 1     | topcenter
+	 2-5   | cornerPoint 1-4
+	*/
+	private float[] cornerX = new float[6];
+	private float[] cornerY = new float[6];
+	
 	private float lastTransformRad = 0;
 	
 	public SpeedObj()
@@ -29,6 +39,8 @@ public class SpeedObj
 		yTile = 10;
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
+		calculateHitboxCorner(getAngleRAD());
+		
 		setMyMomentum(0,0);
 	}
 
@@ -39,14 +51,16 @@ public class SpeedObj
 	
 	public void updatePosition(int delta)
 	{
+		float angle = getAngleRAD();
 		xPos = xPos + (xMomentum*delta/5);
 		yPos = yPos + (yMomentum*delta/5);
 		hitbox.setCenterX(xPos);
 		hitbox.setCenterY(yPos);
 		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
-		hitbox = hitbox.transform(Transform.createRotateTransform(getAngleRAD(), hitbox.getCenterX(), hitbox.getCenterY()));
-		lastTransformRad = getAngleRAD();
-		// TODO angle only works to the rigth side. angle to the left side is 90° off.
+		hitbox = hitbox.transform(Transform.createRotateTransform(angle, hitbox.getCenterX(), hitbox.getCenterY()));
+		calculateHitboxCorner(angle);
+		
+		lastTransformRad = angle;
 		
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
@@ -55,10 +69,27 @@ public class SpeedObj
 		}
 	}
 	
-	public int[] getTilePos()
+	public void calculateHitboxCorner(float angle)
 	{
-		xTile = (int)this.getxPos()/48;
-		yTile = (int)this.getyPos()/24;
+		cornerX[0] = xPos - (float) (Math.sin(angle)*sizeY);
+		cornerY[0] = yPos + (float) (Math.cos(angle)*sizeY);
+		cornerX[1] = xPos + (float) (Math.sin(angle)*sizeY);
+		cornerY[1] = yPos - (float) (Math.cos(angle)*sizeY);
+		
+		cornerX[2] = cornerX[0] - (float) (Math.cos(angle)*sizeX);
+		cornerY[2] = cornerY[0] - (float) (Math.sin(angle)*sizeX);
+		cornerX[3] = cornerX[0] + (float) (Math.cos(angle)*sizeX);
+		cornerY[3] = cornerY[0] + (float) (Math.sin(angle)*sizeX);
+		cornerX[4] = cornerX[1] - (float) (Math.cos(angle)*sizeX);
+		cornerY[4] = cornerY[1] - (float) (Math.sin(angle)*sizeX);
+		cornerX[5] = cornerX[1] + (float) (Math.cos(angle)*sizeX);
+		cornerY[5] = cornerY[1] + (float) (Math.sin(angle)*sizeX);
+	}
+	
+	public int[] getTilePos(float x, float y)
+	{
+		xTile = (int)x/48;
+		yTile = (int)y/24;
 		return new int[]{xTile, yTile};
 	}
 	
@@ -75,11 +106,15 @@ public class SpeedObj
 	{
 		// alpha = arcsin(y/sqrt(x²+y²))
 		float xDir = xPos - Mouse.getX();
-		float yDir = yPos - Mouse.getY();
+		float yDir = Run.screenHeight-yPos - Mouse.getY();
 		float angle = (float)Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir));
 		if (Float.isNaN(angle))
 		{
 			angle = 0;
+		}
+		if (xDir > 0)
+		{
+			angle = -angle;
 		}
 		return angle; 
 	}
@@ -124,15 +159,16 @@ public class SpeedObj
 	{
 		// id 61 == false
 		// id 157 == true
-		int[] tilePos = this.getTilePos();
-		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+		boolean retvalue = false;
+		for (int i = 0; i < 4; i++)
 		{
-			return true;
+			int[] tilePos = this.getTilePos(cornerX[i+2], cornerY[i+2]);
+			if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+			{
+				retvalue = true;
+			}
 		}
-		else
-		{
-			return false;
-		}
+		return retvalue;
 	}
 	
 	//Getter und Setter:
