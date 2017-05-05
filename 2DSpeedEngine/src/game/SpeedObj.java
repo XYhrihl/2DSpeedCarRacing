@@ -1,7 +1,6 @@
 package game;
 
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -87,10 +86,10 @@ public class SpeedObj
 		cornerY[5] = cornerY[1] + (float) (Math.sin(angle)*sizeX);
 	}
 	
-	public int[] getTilePos()
+	public int[] getTilePos(float x, float y)
 	{
-		xTile = (int)this.getxPos()/48;
-		yTile = (int)this.getyPos()/24;
+		xTile = (int)x/48;
+		yTile = (int)y/24;
 		return new int[]{xTile, yTile};
 	}
 	
@@ -160,15 +159,16 @@ public class SpeedObj
 	{
 		// id 61 == false
 		// id 157 == true
-		int[] tilePos = this.getTilePos();
-		if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+		boolean retvalue = false;
+		for (int i = 0; i < 4; i++)
 		{
-			return true;
+			int[] tilePos = this.getTilePos(cornerX[i+2], cornerY[i+2]);
+			if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+			{
+				retvalue = true;
+			}
 		}
-		else
-		{
-			return false;
-		}
+		return retvalue;
 	}
 	
 	//Getter und Setter:
