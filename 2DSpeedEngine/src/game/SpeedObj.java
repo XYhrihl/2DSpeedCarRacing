@@ -5,8 +5,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
-import org.newdawn.slick.tiled.TiledMap;
-
 import gui.Run;
 
 public class SpeedObj 
@@ -30,13 +28,13 @@ public class SpeedObj
 	
 	private float lastTransformRad = 0;
 	
-	public SpeedObj()
+	public SpeedObj(SpeedMap map)
 	{
-		// TODO init TilePos, get the pos from the maps starting position
-		xPos = Run.screenWidth/2;
-		yPos = Run.screenHeight/2;
-		xTile = 10;
-		yTile = 10;
+		int[] startTile = map.getStartPos();
+		xTile = startTile[0];
+		yTile = startTile[1];
+		xPos = xTile*map.getTileWidth()+sizeX;
+		yPos = yTile*map.getTileHeight()+sizeY;
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
 		calculateHitboxCorner(getAngleRAD());
@@ -155,7 +153,7 @@ public class SpeedObj
 		}
 	}
 	
-	public boolean checkCollisionstate(TiledMap map)
+	public boolean checkCollisionstate(SpeedMap map)
 	{
 		// id 61 == false
 		// id 157 == true
