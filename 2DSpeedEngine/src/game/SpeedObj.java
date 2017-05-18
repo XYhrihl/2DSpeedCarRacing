@@ -16,6 +16,9 @@ public class SpeedObj
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
 	
+	// mapare remembers where the object is. start / run / finish
+	private String maparea;
+	
 	/*corner Points
 	 index | location
 	-------|-----------------
@@ -35,6 +38,7 @@ public class SpeedObj
 		yTile = startTile[1];
 		xPos = xTile*map.getTileWidth()+sizeX;
 		yPos = yTile*map.getTileHeight()+sizeY;
+		maparea = "start";
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
 		calculateHitboxCorner(getAngleRAD());
@@ -167,6 +171,29 @@ public class SpeedObj
 			}
 		}
 		return retvalue;
+	}
+	
+	public String getAndUpdateMaparea(SpeedMap map)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			int[] tilePos = this.getTilePos(cornerX[i+2], cornerY[i+2]);
+			if (maparea=="start")
+			{
+				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "startarea", "false")=="false")
+				{
+					maparea="run";
+				}
+			}
+			else if (maparea=="run")
+			{
+				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false")!="false")
+				{
+					maparea="finish";
+				}
+			}
+		}
+		return maparea;
 	}
 	
 	//Getter und Setter:

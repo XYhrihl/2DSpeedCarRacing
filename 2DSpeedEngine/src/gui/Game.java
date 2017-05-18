@@ -70,6 +70,11 @@ public class Game extends BasicGameState
 		}
 		
 		player.updatePosition(delta);
+		
+		//test:
+		// TODO integrate player.getAndUpdateMaparea(map) into the normal update zyclus
+		System.out.println("maparea: " + player.getAndUpdateMaparea(map));
+		
 	}
 
 	public int getID() 
