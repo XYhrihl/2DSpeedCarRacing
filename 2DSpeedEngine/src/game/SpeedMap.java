@@ -5,20 +5,9 @@ import org.newdawn.slick.tiled.TiledMap;
 
 public class SpeedMap extends TiledMap
 {
-	// TODO change ids to Propertys
-	private int[][] ids;
-	
 	public SpeedMap(String ref) throws SlickException 
 	{
 		super(ref);
-		ids = new int [this.getWidth()] [this.getHeight()];
-		for(int i = 0; i <  this.getWidth(); i++)
-		{
-			for(int j = 0; j < this.getHeight(); j++)
-			{
-				ids[i][j] = this.getTileId(i, j, 0);
-			}
-		}
 	}
 	
 	public int[] getStartPos()

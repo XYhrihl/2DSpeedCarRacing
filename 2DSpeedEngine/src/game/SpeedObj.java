@@ -15,6 +15,8 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
+	// TODO use start and finishtime
+	private long starttime, finishtime;
 	
 	// mapare remembers where the object is. start / run / finish
 	private String maparea;
@@ -187,7 +189,7 @@ public class SpeedObj
 			}
 			else if (maparea=="run")
 			{
-				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false")!="false")
+				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false") == map.getTileProperty(26, "zielarea", "xxx"))
 				{
 					maparea="finish";
 				}
