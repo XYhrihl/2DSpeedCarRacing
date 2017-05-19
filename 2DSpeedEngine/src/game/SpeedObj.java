@@ -15,7 +15,6 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
-	// TODO use start and finishtime
 	private long starttime, finishtime;
 	
 	// mapare remembers where the object is. start / run / finish
@@ -185,6 +184,7 @@ public class SpeedObj
 				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "startarea", "false")=="false")
 				{
 					maparea="run";
+					starttime = System.currentTimeMillis();
 				}
 			}
 			else if (maparea=="run")
@@ -192,10 +192,35 @@ public class SpeedObj
 				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false") == map.getTileProperty(26, "zielarea", "xxx"))
 				{
 					maparea="finish";
+					finishtime = System.currentTimeMillis();
 				}
 			}
 		}
 		return maparea;
+	}
+	
+	public long getRunTimeMillis()
+	{
+		if (maparea == "finish")
+		{
+			return finishtime - starttime;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	
+	public String pauseGame()
+	{
+		String oldMaparea = maparea;
+		maparea="pause";
+		return oldMaparea;
+	}
+	
+	public void continueGame(String continueWith)
+	{
+		maparea = continueWith;
 	}
 	
 	//Getter und Setter:
@@ -235,5 +260,4 @@ public class SpeedObj
 	{
 		this.yPos = yPos;
 	}
-	
 }

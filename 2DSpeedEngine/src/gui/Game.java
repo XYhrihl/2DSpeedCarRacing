@@ -19,6 +19,7 @@ public class Game extends BasicGameState
 	private SpeedObj player;
 	private Input input;
 	private SpeedMap map;
+	private String pauseMaparea = "unpaused";
 	
 	public Game (int index)
 	{
@@ -53,16 +54,11 @@ public class Game extends BasicGameState
 	{
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
-				
-		// inputhandling:
+		
+		// for inputhandling in checkForFinish():
 		input = gc.getInput();
 		
-		// exit via escape key
-		if (input.isKeyPressed(Input.KEY_ESCAPE))
-		{
-			// TODO add exit warning and question to continue or cancel
-			System.exit(0);
-		}
+		checkForFinish();
 		
 		if (input.isMouseButtonDown(0))
 		{
@@ -70,11 +66,6 @@ public class Game extends BasicGameState
 		}
 		
 		player.updatePosition(delta);
-		
-		//test:
-		// TODO integrate player.getAndUpdateMaparea(map) into the normal update zyclus
-		System.out.println("maparea: " + player.getAndUpdateMaparea(map));
-		
 	}
 
 	public int getID() 
@@ -82,9 +73,33 @@ public class Game extends BasicGameState
 		return myIndex;
 	}
 	
+	public void checkForFinish()
+	{
+		// Trigger pause and finish from this method
+		
+		// exit via escape key and mouseclick
+		if (input.isKeyPressed(Input.KEY_ESCAPE))
+		{
+			pauseMaparea = player.pauseGame();
+		}
+		//resume:
+		//player.continueGame(pauseMaparea);
+		//pauseMaparea = "unpaused";
+		
+		if (player.getAndUpdateMaparea(map) == "finish")
+		{
+			player.setMyMomentum(player.getxMomentum()*0.9F, player.getyMomentum()*0.9F);
+		}
+	}
+	
 	//overwrite mouseReleased method for button click handling
 	public void mouseReleased(int button, int x, int y)
 	{
-		
+		// TODO add exit warning and question to continue or cancel
+		// TODO add buttons and mousePosition
+		if (pauseMaparea!="unpaused")
+		{
+			System.exit(0);
+		}
 	}
 }
