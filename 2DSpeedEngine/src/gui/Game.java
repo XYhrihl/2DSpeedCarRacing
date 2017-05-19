@@ -8,8 +8,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.tiled.TiledMap;
-
+import game.SpeedMap;
 import game.SpeedObj;
 
 public class Game extends BasicGameState
@@ -19,7 +18,7 @@ public class Game extends BasicGameState
 	private int mPosY = 0;
 	private SpeedObj player;
 	private Input input;
-	private TiledMap map;
+	private SpeedMap map;
 	
 	public Game (int index)
 	{
@@ -28,8 +27,8 @@ public class Game extends BasicGameState
 
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
 	{
-		player = new SpeedObj();
-		map = new TiledMap("res/maps/basic_speedmap.tmx");
+		map = new SpeedMap("res/maps/basic_speedmap.tmx");
+		player = new SpeedObj(map);
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -71,6 +70,11 @@ public class Game extends BasicGameState
 		}
 		
 		player.updatePosition(delta);
+		
+		//test:
+		// TODO integrate player.getAndUpdateMaparea(map) into the normal update zyclus
+		System.out.println("maparea: " + player.getAndUpdateMaparea(map));
+		
 	}
 
 	public int getID() 

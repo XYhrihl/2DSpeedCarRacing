@@ -5,8 +5,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
-import org.newdawn.slick.tiled.TiledMap;
-
 import gui.Run;
 
 public class SpeedObj 
@@ -17,6 +15,11 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
+	// TODO use start and finishtime
+	private long starttime, finishtime;
+	
+	// mapare remembers where the object is. start / run / finish
+	private String maparea;
 	
 	/*corner Points
 	 index | location
@@ -30,13 +33,14 @@ public class SpeedObj
 	
 	private float lastTransformRad = 0;
 	
-	public SpeedObj()
+	public SpeedObj(SpeedMap map)
 	{
-		// TODO init TilePos, get the pos from the maps starting position
-		xPos = Run.screenWidth/2;
-		yPos = Run.screenHeight/2;
-		xTile = 10;
-		yTile = 10;
+		int[] startTile = map.getStartPos();
+		xTile = startTile[0];
+		yTile = startTile[1];
+		xPos = xTile*map.getTileWidth()+sizeX;
+		yPos = yTile*map.getTileHeight()+sizeY;
+		maparea = "start";
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
 		calculateHitboxCorner(getAngleRAD());
@@ -155,7 +159,7 @@ public class SpeedObj
 		}
 	}
 	
-	public boolean checkCollisionstate(TiledMap map)
+	public boolean checkCollisionstate(SpeedMap map)
 	{
 		// id 61 == false
 		// id 157 == true
@@ -169,6 +173,29 @@ public class SpeedObj
 			}
 		}
 		return retvalue;
+	}
+	
+	public String getAndUpdateMaparea(SpeedMap map)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			int[] tilePos = this.getTilePos(cornerX[i+2], cornerY[i+2]);
+			if (maparea=="start")
+			{
+				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "startarea", "false")=="false")
+				{
+					maparea="run";
+				}
+			}
+			else if (maparea=="run")
+			{
+				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false") == map.getTileProperty(26, "zielarea", "xxx"))
+				{
+					maparea="finish";
+				}
+			}
+		}
+		return maparea;
 	}
 	
 	//Getter und Setter:

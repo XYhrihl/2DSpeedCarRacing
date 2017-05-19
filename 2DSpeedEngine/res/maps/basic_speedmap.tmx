@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="45" tilewidth="48" tileheight="24" backgroundcolor="#64afff" nextobjectid="4">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="45" tilewidth="48" tileheight="24" backgroundcolor="#cccccc" nextobjectid="4">
  <tileset firstgid="1" name="Tileset" tilewidth="48" tileheight="24" tilecount="240" columns="12">
   <image source="../Tiled-Resources/part2_tileset.png" width="576" height="480"/>
+  <tile id="25">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
   <tile id="60">
    <properties>
     <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="121">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="startarea" value="true"/>
+    <property name="startposition" value="start"/>
+   </properties>
+  </tile>
+  <tile id="132">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="startarea" value="true"/>
    </properties>
   </tile>
   <tile id="156">
@@ -19,7 +38,7 @@
  </tileset>
  <layer name="TileLayer" width="40" height="45">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3PQQ7AIAgFUS7mUblr94aE+lutlVnMRqM83MycHtW6orMs5c2dP/HV86l/4cOH75++GTvhw7ejb5UZH76v29V1ki+6j969XTYHX03fqvDhq+KbsSc+fPjGfcosfPhUH+ldhwWf9iAcAAA=
+   H4sIAAAAAAAAC+3QsQ2AMAwFUc/BLixGzxjZFdFGQiY/CVjxFdcg2X6kmFmhrs6q+9vemDLzZie+fD51Fz58q/qO4L7e95vxT/jwRfR5c/jwjfT9WVTXSr6t6mludN4dfDl9X9jw4cvk826pO/Hhw9fmU27hw6f6SO8C89YUriAcAAA=
   </data>
  </layer>
 </map>
