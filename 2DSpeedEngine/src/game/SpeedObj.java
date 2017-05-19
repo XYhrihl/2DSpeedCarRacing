@@ -16,8 +16,9 @@ public class SpeedObj
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
 	private long starttime, finishtime;
+	private int accelFactor;
 	
-	// mapare remembers where the object is. start / run / finish
+	// mapare remembers where the object is. start / run / finish / pause
 	private String maparea;
 	
 	/*corner Points
@@ -31,6 +32,7 @@ public class SpeedObj
 	private float[] cornerY = new float[6];
 	
 	private float lastTransformRad = 0;
+	private PauseState pauseState;
 	
 	public SpeedObj(SpeedMap map)
 	{
@@ -39,6 +41,8 @@ public class SpeedObj
 		yTile = startTile[1];
 		xPos = xTile*map.getTileWidth()+sizeX;
 		yPos = yTile*map.getTileHeight()+sizeY;
+		// TODO add getter and setter for accelFactor, make a difficulty option wich changes this factor
+		accelFactor = 100000;
 		maparea = "start";
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
@@ -100,9 +104,11 @@ public class SpeedObj
 	{
 		// TODO balance acceleration-rate in this method
 		// TODO add difficulty which influences the speed factor
-		int factor = 100000;
-		xMomentum = xMomentum + (x-this.getxPos())*delta/factor;
-		yMomentum = yMomentum + (y-this.getyPos())*delta/factor;
+		if (maparea != "pause")
+		{
+			xMomentum = xMomentum + (x-this.getxPos())*delta/accelFactor;
+			yMomentum = yMomentum + (y-this.getyPos())*delta/accelFactor;
+		}
 	}
 	
 	public float getAngleRAD()
@@ -211,16 +217,20 @@ public class SpeedObj
 		}
 	}
 	
-	public String pauseGame()
+	public void pauseGame()
 	{
-		String oldMaparea = maparea;
+		// TODO stop timecount during the pause --> count pausetime
+		pauseState = new PauseState(maparea, xMomentum, yMomentum);
 		maparea="pause";
-		return oldMaparea;
+		xMomentum = 0;
+		yMomentum = 0;
 	}
 	
-	public void continueGame(String continueWith)
+	public void continueGame()
 	{
-		maparea = continueWith;
+		maparea = pauseState.getMaparea();
+		xMomentum = pauseState.getxMomentum();
+		yMomentum = pauseState.getyMomentum();
 	}
 	
 	//Getter und Setter:

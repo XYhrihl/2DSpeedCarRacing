@@ -19,11 +19,12 @@ public class Game extends BasicGameState
 	private SpeedObj player;
 	private Input input;
 	private SpeedMap map;
-	private String pauseMaparea = "unpaused";
+	private boolean pause;
 	
 	public Game (int index)
 	{
 		myIndex = index;
+		pause = false;
 	}
 
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
@@ -48,6 +49,15 @@ public class Game extends BasicGameState
 		
 		g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
 		
+		if (pause)
+		{
+			g.setColor(Run.backgroundColor);
+			g.fillRect(Run.screenWidth/4, Run.screenHeight/4, Run.screenWidth/2, Run.screenHeight/2);
+			g.setColor(Color.blue);
+			g.fillRect(Run.screenWidth/4+Run.screenWidth/32, Run.screenHeight/4+Run.screenHeight/32, Run.screenWidth/2-Run.screenWidth/16, Run.screenHeight/4-Run.screenHeight/16);
+			g.setColor(Color.red);
+			g.fillRect(Run.screenWidth/4+Run.screenWidth/32, Run.screenHeight/2+Run.screenHeight/32, Run.screenWidth/2-Run.screenWidth/16, Run.screenHeight/4-Run.screenHeight/16);
+		}
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException 
@@ -80,11 +90,9 @@ public class Game extends BasicGameState
 		// exit via escape key and mouseclick
 		if (input.isKeyPressed(Input.KEY_ESCAPE))
 		{
-			pauseMaparea = player.pauseGame();
+			player.pauseGame();
+			pause = true;
 		}
-		//resume:
-		//player.continueGame(pauseMaparea);
-		//pauseMaparea = "unpaused";
 		
 		if (player.getAndUpdateMaparea(map) == "finish")
 		{
@@ -97,9 +105,17 @@ public class Game extends BasicGameState
 	{
 		// TODO add exit warning and question to continue or cancel
 		// TODO add buttons and mousePosition
-		if (pauseMaparea!="unpaused")
+		if (pause)
 		{
-			System.exit(0);
+			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/4+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/2-Run.screenHeight/32))
+			{
+				System.exit(0);
+			}
+			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/2+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/4*3-Run.screenHeight/32))
+			{
+				player.continueGame();
+				pause = false;
+			}
 		}
 	}
 }
