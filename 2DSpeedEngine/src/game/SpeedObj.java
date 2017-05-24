@@ -66,9 +66,9 @@ public class SpeedObj
 		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
 		hitbox = hitbox.transform(Transform.createRotateTransform(angle, hitbox.getCenterX(), hitbox.getCenterY()));
 		calculateHitboxCorner(angle);
-		
 		lastTransformRad = angle;
 		
+		// TODO do collisiondetection here and trigger consequences
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
 		{
@@ -231,6 +231,23 @@ public class SpeedObj
 		maparea = pauseState.getMaparea();
 		xMomentum = pauseState.getxMomentum();
 		yMomentum = pauseState.getyMomentum();
+	}
+	
+	public void gameFinished()
+	{
+		
+	}
+	
+	public void restartGame(SpeedMap map)
+	{
+		int[] startTile = map.getStartPos();
+		xTile = startTile[0];
+		yTile = startTile[1];
+		xPos = xTile*map.getTileWidth()+sizeX;
+		yPos = yTile*map.getTileHeight()+sizeY;
+		maparea = "start";
+		calculateHitboxCorner(getAngleRAD());
+		setMyMomentum(0,0);
 	}
 	
 	//Getter und Setter:
