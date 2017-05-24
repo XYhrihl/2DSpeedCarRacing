@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
@@ -15,7 +17,8 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
-	private long starttime, finishtime;
+	private long starttime, finishtime, runtime;
+	private ArrayList<PauseState> pauses = new ArrayList<PauseState>();
 	private int accelFactor;
 	
 	// mapare remembers where the object is. start / run / finish / pause
@@ -32,7 +35,7 @@ public class SpeedObj
 	private float[] cornerY = new float[6];
 	
 	private float lastTransformRad = 0;
-	private PauseState pauseState;
+	//private PauseState pauseState;
 	
 	public SpeedObj(SpeedMap map)
 	{
@@ -198,7 +201,7 @@ public class SpeedObj
 				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false") == map.getTileProperty(26, "zielarea", "xxx"))
 				{
 					maparea="finish";
-					finishtime = System.currentTimeMillis();
+					gameFinished();
 				}
 			}
 		}
@@ -219,8 +222,7 @@ public class SpeedObj
 	
 	public void pauseGame()
 	{
-		// TODO stop timecount during the pause --> count pausetime
-		pauseState = new PauseState(maparea, xMomentum, yMomentum);
+		pauses.add(new PauseState(System.currentTimeMillis(), maparea, xMomentum, yMomentum));
 		maparea="pause";
 		xMomentum = 0;
 		yMomentum = 0;
@@ -228,18 +230,34 @@ public class SpeedObj
 	
 	public void continueGame()
 	{
-		maparea = pauseState.getMaparea();
-		xMomentum = pauseState.getxMomentum();
-		yMomentum = pauseState.getyMomentum();
+		maparea = pauses.get(pauses.size()-1).getMaparea();
+		xMomentum = pauses.get(pauses.size()-1).getxMomentum();
+		yMomentum = pauses.get(pauses.size()-1).getyMomentum();
+		pauses.get(pauses.size()-1).setFinishtime(System.currentTimeMillis());
 	}
 	
 	public void gameFinished()
 	{
-		
+		finishtime = System.currentTimeMillis();
+		runtime = (finishtime-starttime);
+		for (PauseState p : pauses)
+		{
+			runtime = runtime - (p.getFinishtime()-p.getStarttime());
+		}
+		System.out.println("Zeit in millis: " + runtime);
 	}
 	
 	public void restartGame(SpeedMap map)
 	{
+		// TODO Save Score
+		
+		// Reset Logic:
+		finishtime = 0;
+		starttime = 0;
+		runtime = 0;
+		pauses = new ArrayList<PauseState>();
+		
+		// Reset Position and Momentum:
 		int[] startTile = map.getStartPos();
 		xTile = startTile[0];
 		yTile = startTile[1];

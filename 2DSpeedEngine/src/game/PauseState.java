@@ -4,14 +4,16 @@ public class PauseState
 {
 	private String maparea;
 	private float xMomentum, yMomentum;
+	private long starttime, finishtime;
 	
 	public PauseState ()
 	{
 		
 	}
 	
-	public PauseState (String maparea, float xM, float yM)
+	public PauseState (long starttime, String maparea, float xM, float yM)
 	{
+		this.starttime = starttime;
 		this.maparea = maparea;
 		this.xMomentum = xM;
 		this.yMomentum = yM;
@@ -32,5 +34,20 @@ public class PauseState
 	public float getyMomentum()
 	{
 		return this.yMomentum;
+	}
+	
+	public long getStarttime()
+	{
+		return this.starttime;
+	}
+	
+	public long getFinishtime()
+	{
+		return this.finishtime;
+	}
+	
+	public void setFinishtime(long t)
+	{
+		this.finishtime = t;
 	}
 }

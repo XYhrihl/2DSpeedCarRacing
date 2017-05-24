@@ -71,7 +71,6 @@ public class Game extends BasicGameState
 		
 		if (checkForFinish())
 		{
-			player.gameFinished();
 			finished = true;
 		}
 		
@@ -114,8 +113,6 @@ public class Game extends BasicGameState
 	//overwrite mouseReleased method for button click handling
 	public void mouseReleased(int button, int x, int y)
 	{
-		// TODO add exit warning and question to continue or cancel
-		// TODO add buttons and mousePosition
 		if (pause || finished)
 		{
 			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/4+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/2-Run.screenHeight/32))
