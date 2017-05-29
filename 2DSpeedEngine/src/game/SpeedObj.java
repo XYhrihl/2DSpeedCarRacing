@@ -17,11 +17,11 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
-	private long starttime, finishtime, runtime;
+	private long starttime, finishtime, runtime, showtime;
 	private ArrayList<PauseState> pauses = new ArrayList<PauseState>();
 	private int accelFactor;
 	
-	// mapare remembers where the object is. start / run / finish / pause
+	// mapare remembers where the object is. start / run / finish / pause / collided
 	private String maparea;
 	
 	/*corner Points
@@ -47,6 +47,7 @@ public class SpeedObj
 		// TODO add getter and setter for accelFactor, make a difficulty option wich changes this factor
 		accelFactor = 100000;
 		maparea = "start";
+		starttime = 0;
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
 		calculateHitboxCorner(getAngleRAD());
@@ -107,7 +108,7 @@ public class SpeedObj
 	{
 		// TODO balance acceleration-rate in this method
 		// TODO add difficulty which influences the speed factor
-		if (maparea != "pause")
+		if (maparea != "pause" && maparea != "collided")
 		{
 			xMomentum = xMomentum + (x-this.getxPos())*delta/accelFactor;
 			yMomentum = yMomentum + (y-this.getyPos())*delta/accelFactor;
@@ -268,6 +269,13 @@ public class SpeedObj
 		setMyMomentum(0,0);
 	}
 	
+	public void collided()
+	{
+		maparea = "collided";
+		xMomentum = xMomentum * 0.8F;
+		yMomentum = yMomentum * 0.8F;
+	}
+	
 	//Getter und Setter:
 	
 	public float getxMomentum() 
@@ -286,6 +294,26 @@ public class SpeedObj
 		this.yMomentum = y;
 	}
 
+	public long getShowtime()
+	{
+		if (starttime == 0)
+		{
+			showtime = 0;
+		}
+		else
+		{
+			if (maparea!="pause" && maparea!="finish")
+			{
+				showtime = (System.currentTimeMillis()-starttime);
+				for (PauseState p : pauses)
+				{
+					showtime = showtime - (p.getFinishtime()-p.getStarttime());
+				}
+			}
+		}
+		return this.showtime;
+	}
+	
 	public float getxPos() 
 	{
 		return xPos;

@@ -19,13 +19,14 @@ public class Game extends BasicGameState
 	private SpeedObj player;
 	private Input input;
 	private SpeedMap map;
-	private boolean pause, finished;
+	private boolean pause, finished, collided;
 	
 	public Game (int index)
 	{
 		myIndex = index;
 		pause = false;
 		finished = false;
+		collided = false;
 	}
 
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
@@ -38,19 +39,15 @@ public class Game extends BasicGameState
 	{
 		map.render(0, 0);
 		
-		if (player.checkCollisionstate(map) == false)
-		{
-			g.setColor(Color.black);
-		}
-		else
-		{
-			g.setColor(Color.red);
-		}
-		player.renderObj(g);
+		g.setColor(Color.black);
 		
+		player.renderObj(g);
 		g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
 		
-		if (pause || finished)
+		g.setColor(Color.white);
+		g.drawString(""+player.getShowtime(), Run.screenWidth/2-40, 20);
+		
+		if (pause || finished || collided)
 		{
 			g.setColor(Run.backgroundColor);
 			g.fillRect(Run.screenWidth/4, Run.screenHeight/4, Run.screenWidth/2, Run.screenHeight/2);
@@ -80,6 +77,15 @@ public class Game extends BasicGameState
 		}
 		
 		player.updatePosition(delta);
+		
+		if(player.checkCollisionstate(map))
+		{
+			player.collided();
+			if (player.getxMomentum()<0.05F && player.getyMomentum()<0.05F)
+			{
+				collided = true;
+			}
+		}
 	}
 
 	public int getID() 
@@ -91,7 +97,7 @@ public class Game extends BasicGameState
 	{
 		// Trigger pause and finish from this method
 		
-		// exit via escape key and mouseclick
+		// pause menu via escape key
 		if (input.isKeyPressed(Input.KEY_ESCAPE))
 		{
 			player.pauseGame();
@@ -113,7 +119,7 @@ public class Game extends BasicGameState
 	//overwrite mouseReleased method for button click handling
 	public void mouseReleased(int button, int x, int y)
 	{
-		if (pause || finished)
+		if (pause || finished || collided)
 		{
 			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/4+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/2-Run.screenHeight/32))
 			{
@@ -128,12 +134,13 @@ public class Game extends BasicGameState
 				pause = false;
 			}
 		}
-		if (finished)
+		if (finished || collided)
 		{
 			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/2+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/4*3-Run.screenHeight/32))
 			{
 				player.restartGame(map);
 				finished = false;
+				collided = false;
 			}
 		}
 	}

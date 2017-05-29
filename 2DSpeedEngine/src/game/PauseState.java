@@ -17,6 +17,7 @@ public class PauseState
 		this.maparea = maparea;
 		this.xMomentum = xM;
 		this.yMomentum = yM;
+		this.finishtime = 0;
 	}
 	
 	// Getter und Setter:
