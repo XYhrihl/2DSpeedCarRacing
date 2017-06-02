@@ -35,7 +35,7 @@ public class Menu extends BasicGameState
 		g.fillRect(Run.screenWidth-120, Run.screenHeight-80, 100, 60);
 		
 		// play button
-		g.setColor(Color.blue);
+		g.setColor(Color.white);
 		g.fillRect(Run.screenWidth/5*2, Run.screenHeight/5*2, Run.screenWidth/5*1, Run.screenHeight/5*1);
 		
 		//debug mouse pos:
