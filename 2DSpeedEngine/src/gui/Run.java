@@ -14,7 +14,7 @@ public class Run extends StateBasedGame
 	public static int screenWidth = 0;
 	public static int screenHeight = 0;
 	
-	public static Color backgroundColor = new Color(40,210,68);
+	public static Color backgroundColor = new Color(26,120,50);
 	
 	public Run(String name) 
 	{

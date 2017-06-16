@@ -72,7 +72,6 @@ public class SpeedObj
 		calculateHitboxCorner(angle);
 		lastTransformRad = angle;
 		
-		// TODO do collisiondetection here and trigger consequences
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
 		{
