@@ -212,7 +212,7 @@ public class SpeedObj
 	{
 		if (maparea == "finish")
 		{
-			return finishtime - starttime;
+			return this.runtime;
 		}
 		else
 		{
@@ -244,7 +244,7 @@ public class SpeedObj
 		{
 			runtime = runtime - (p.getFinishtime()-p.getStarttime());
 		}
-		System.out.println("Zeit in millis: " + runtime);
+		
 	}
 	
 	public void restartGame(SpeedMap map)

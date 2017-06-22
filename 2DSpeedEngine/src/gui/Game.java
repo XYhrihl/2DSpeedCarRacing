@@ -1,6 +1,16 @@
 package gui;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
@@ -10,6 +20,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import game.HighScore;
 import game.SpeedMap;
@@ -38,6 +50,8 @@ public class Game extends BasicGameState
 	{
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
+		// TODO initiallize saved highscores
+		highscore = new ArrayList<HighScore>();
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -73,6 +87,11 @@ public class Game extends BasicGameState
 		
 		if (checkForFinish())
 		{
+			if(!finished)
+			{
+				highscore.add(new HighScore(player.getRunTimeMillis()));
+				saveToXML();
+			}
 			finished = true;
 		}
 		
@@ -119,6 +138,49 @@ public class Game extends BasicGameState
 		}
 		
 		return false;
+	}
+	
+	public void saveToXML()
+	{
+		Document doc;
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try
+		{
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			doc = db.newDocument();
+			
+			Element allScores = doc.createElement("allScores");
+			
+			for (HighScore h: highscore)
+			{
+				Element score = doc.createElement("score");
+				Element time = doc.createElement("Zeit");
+				Element points = doc.createElement("Punkte");
+				time.appendChild(doc.createTextNode(h.getTimeString()));
+				points.appendChild(doc.createTextNode(h.getPointString()));
+				score.appendChild(time);
+				score.appendChild(points);
+				allScores.appendChild(score);
+			}
+			
+			doc.appendChild(allScores);
+			
+			try
+			{
+				Transformer tr = TransformerFactory.newInstance().newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(new File("./save/highscore.xml"));
+				tr.transform(source, result);
+			}
+			catch (TransformerException te) 
+			{
+	            System.out.println(te.getMessage());
+	        }
+		}
+		catch(ParserConfigurationException pce)
+		{
+			System.out.println("UsersXML: Error trying to instantiate DocumentBuilder " + pce);
+		}
 	}
 	
 	//overwrite mouseReleased method for button click handling

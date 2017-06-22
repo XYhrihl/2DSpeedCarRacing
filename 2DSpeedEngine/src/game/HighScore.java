@@ -2,23 +2,34 @@ package game;
 
 public class HighScore 
 {
-	private int time;
-	private int points;
+	// TODO add more attributes like difficulty.. usw.
+	private long time;
+	private long points;
 	
-	public HighScore(int t)
+	public HighScore(long t)
 	{
 		this.time = t;
 		points = calculatePoints();
 	}
 	
-	public int calculatePoints()
+	public long calculatePoints()
 	{
 		// TODO calculate points!!!
 		return 1;
 	}
 	
-	public int[] getScore()
+	public long[] getScore()
 	{
-		return new int[] {time, points};
+		return new long[] {time, points};
+	}
+	
+	public String getTimeString()
+	{
+		return String.valueOf(time);
+	}
+	
+	public String getPointString()
+	{
+		return String.valueOf(points);
 	}
 }
