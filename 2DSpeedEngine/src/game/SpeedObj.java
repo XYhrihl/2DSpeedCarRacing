@@ -17,7 +17,8 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
-	private long starttime, finishtime, runtime, showtime;
+	private long runtime;
+	//private long starttime, finishtime, runtime, showtime;
 	private ArrayList<PauseState> pauses = new ArrayList<PauseState>();
 	private int accelFactor;
 	
@@ -44,10 +45,8 @@ public class SpeedObj
 		yTile = startTile[1];
 		xPos = xTile*map.getTileWidth()+sizeX;
 		yPos = yTile*map.getTileHeight()+sizeY;
-		// TODO add getter and setter for accelFactor, make a difficulty option wich changes this factor
 		accelFactor = 100000;
 		maparea = "start";
-		starttime = 0;
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
 		calculateHitboxCorner(getAngleRAD());
@@ -76,6 +75,11 @@ public class SpeedObj
 		if (windowExit!="none")
 		{
 			calcNewMomentum(windowExit);
+		}
+		
+		if (maparea == "run")
+		{
+			runtime = runtime + delta;
 		}
 	}
 	
@@ -193,7 +197,6 @@ public class SpeedObj
 				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "startarea", "false")=="false")
 				{
 					maparea="run";
-					starttime = System.currentTimeMillis();
 				}
 			}
 			else if (maparea=="run")
@@ -201,7 +204,6 @@ public class SpeedObj
 				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false") == map.getTileProperty(26, "zielarea", "xxx"))
 				{
 					maparea="finish";
-					gameFinished();
 				}
 			}
 		}
@@ -210,14 +212,7 @@ public class SpeedObj
 	
 	public long getRunTimeMillis()
 	{
-		if (maparea == "finish")
-		{
-			return this.runtime;
-		}
-		else
-		{
-			return -1;
-		}
+		return this.runtime;
 	}
 	
 	public void pauseGame()
@@ -236,24 +231,9 @@ public class SpeedObj
 		pauses.get(pauses.size()-1).setFinishtime(System.currentTimeMillis());
 	}
 	
-	public void gameFinished()
-	{
-		finishtime = System.currentTimeMillis();
-		runtime = (finishtime-starttime);
-		for (PauseState p : pauses)
-		{
-			runtime = runtime - (p.getFinishtime()-p.getStarttime());
-		}
-		
-	}
-	
 	public void restartGame(SpeedMap map)
 	{
-		// TODO Save Score
-		
 		// Reset Logic:
-		finishtime = 0;
-		starttime = 0;
 		runtime = 0;
 		pauses = new ArrayList<PauseState>();
 		
@@ -293,26 +273,6 @@ public class SpeedObj
 		this.yMomentum = y;
 	}
 
-	public long getShowtime()
-	{
-		if (starttime == 0)
-		{
-			showtime = 0;
-		}
-		else
-		{
-			if (maparea!="pause" && maparea!="finish")
-			{
-				showtime = (System.currentTimeMillis()-starttime);
-				for (PauseState p : pauses)
-				{
-					showtime = showtime - (p.getFinishtime()-p.getStarttime());
-				}
-			}
-		}
-		return this.showtime;
-	}
-	
 	public float getxPos() 
 	{
 		return xPos;

@@ -64,7 +64,7 @@ public class Game extends BasicGameState
 		g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
 		
 		g.setColor(Color.white);
-		g.drawString(""+player.getShowtime(), Run.screenWidth/2-40, 20);
+		g.drawString(""+player.getRunTimeMillis(), Run.screenWidth/2-40, 20);
 		
 		if (pause || finished || collided)
 		{
@@ -155,11 +155,8 @@ public class Game extends BasicGameState
 			{
 				Element score = doc.createElement("score");
 				Element time = doc.createElement("Zeit");
-				Element points = doc.createElement("Punkte");
 				time.appendChild(doc.createTextNode(h.getTimeString()));
-				points.appendChild(doc.createTextNode(h.getPointString()));
 				score.appendChild(time);
-				score.appendChild(points);
 				allScores.appendChild(score);
 			}
 			
