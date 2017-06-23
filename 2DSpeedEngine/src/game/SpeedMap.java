@@ -10,6 +10,7 @@ public class SpeedMap extends TiledMap
 		super(ref);
 	}
 	
+	// TODO add MapName
 	public int[] getStartPos()
 	{
 		for(int i = 0; i < this.getWidth(); i++)

@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
@@ -15,10 +17,12 @@ public class SpeedObj
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
-	// TODO use start and finishtime
-	private long starttime, finishtime;
+	private long runtime;
+	//private long starttime, finishtime, runtime, showtime;
+	private ArrayList<PauseState> pauses = new ArrayList<PauseState>();
+	private int accelFactor;
 	
-	// mapare remembers where the object is. start / run / finish
+	// mapare remembers where the object is. start / run / finish / pause / collided
 	private String maparea;
 	
 	/*corner Points
@@ -32,6 +36,7 @@ public class SpeedObj
 	private float[] cornerY = new float[6];
 	
 	private float lastTransformRad = 0;
+	//private PauseState pauseState;
 	
 	public SpeedObj(SpeedMap map)
 	{
@@ -40,6 +45,7 @@ public class SpeedObj
 		yTile = startTile[1];
 		xPos = xTile*map.getTileWidth()+sizeX;
 		yPos = yTile*map.getTileHeight()+sizeY;
+		accelFactor = 100000;
 		maparea = "start";
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
@@ -63,13 +69,17 @@ public class SpeedObj
 		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
 		hitbox = hitbox.transform(Transform.createRotateTransform(angle, hitbox.getCenterX(), hitbox.getCenterY()));
 		calculateHitboxCorner(angle);
-		
 		lastTransformRad = angle;
 		
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
 		{
 			calcNewMomentum(windowExit);
+		}
+		
+		if (maparea == "run")
+		{
+			runtime = runtime + delta;
 		}
 	}
 	
@@ -101,9 +111,11 @@ public class SpeedObj
 	{
 		// TODO balance acceleration-rate in this method
 		// TODO add difficulty which influences the speed factor
-		int factor = 100000;
-		xMomentum = xMomentum + (x-this.getxPos())*delta/factor;
-		yMomentum = yMomentum + (y-this.getyPos())*delta/factor;
+		if (maparea != "pause" && maparea != "collided")
+		{
+			xMomentum = xMomentum + (x-this.getxPos())*delta/accelFactor;
+			yMomentum = yMomentum + (y-this.getyPos())*delta/accelFactor;
+		}
 	}
 	
 	public float getAngleRAD()
@@ -198,6 +210,51 @@ public class SpeedObj
 		return maparea;
 	}
 	
+	public long getRunTimeMillis()
+	{
+		return this.runtime;
+	}
+	
+	public void pauseGame()
+	{
+		pauses.add(new PauseState(System.currentTimeMillis(), maparea, xMomentum, yMomentum));
+		maparea="pause";
+		xMomentum = 0;
+		yMomentum = 0;
+	}
+	
+	public void continueGame()
+	{
+		maparea = pauses.get(pauses.size()-1).getMaparea();
+		xMomentum = pauses.get(pauses.size()-1).getxMomentum();
+		yMomentum = pauses.get(pauses.size()-1).getyMomentum();
+		pauses.get(pauses.size()-1).setFinishtime(System.currentTimeMillis());
+	}
+	
+	public void restartGame(SpeedMap map)
+	{
+		// Reset Logic:
+		runtime = 0;
+		pauses = new ArrayList<PauseState>();
+		
+		// Reset Position and Momentum:
+		int[] startTile = map.getStartPos();
+		xTile = startTile[0];
+		yTile = startTile[1];
+		xPos = xTile*map.getTileWidth()+sizeX;
+		yPos = yTile*map.getTileHeight()+sizeY;
+		maparea = "start";
+		calculateHitboxCorner(getAngleRAD());
+		setMyMomentum(0,0);
+	}
+	
+	public void collided()
+	{
+		maparea = "collided";
+		xMomentum = xMomentum * 0.8F;
+		yMomentum = yMomentum * 0.8F;
+	}
+	
 	//Getter und Setter:
 	
 	public float getxMomentum() 
@@ -235,5 +292,4 @@ public class SpeedObj
 	{
 		this.yPos = yPos;
 	}
-	
 }

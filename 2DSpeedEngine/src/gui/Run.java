@@ -14,7 +14,7 @@ public class Run extends StateBasedGame
 	public static int screenWidth = 0;
 	public static int screenHeight = 0;
 	
-	public static Color backgroundColor = new Color(220,220,220);
+	public static Color backgroundColor = new Color(26,120,50);
 	
 	public Run(String name) 
 	{
@@ -39,7 +39,7 @@ public class Run extends StateBasedGame
 			appgc = new AppGameContainer(new Run(gamename));
 			screenWidth = appgc.getScreenWidth();
 			screenHeight = appgc.getScreenHeight();
-			appgc.setTargetFrameRate(200);
+			//appgc.setTargetFrameRate(200);
 			appgc.setDisplayMode(screenWidth, screenHeight, false);
 			appgc.setFullscreen(true); // need exit button in all states for true
 			appgc.start();
