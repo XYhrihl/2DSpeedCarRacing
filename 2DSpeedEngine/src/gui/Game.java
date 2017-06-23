@@ -54,7 +54,7 @@ public class Game extends BasicGameState
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
 		highscore = new ArrayList<HighScore>();
-		readXMLsaves("./save/highscore.xml");
+		readXMLsaves("save/highscore.xml");
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -206,7 +206,7 @@ public class Game extends BasicGameState
 			{
 				Transformer tr = TransformerFactory.newInstance().newTransformer();
 				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(new File("./save/highscore.xml"));
+				StreamResult result = new StreamResult(new File("save/highscore.xml"));
 				tr.transform(source, result);
 			}
 			catch (TransformerException te) 
