@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -22,6 +23,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import game.HighScore;
 import game.SpeedMap;
@@ -50,8 +53,8 @@ public class Game extends BasicGameState
 	{
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
-		// TODO initiallize saved highscores
 		highscore = new ArrayList<HighScore>();
+		readXMLsaves("./save/highscore.xml");
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -89,7 +92,8 @@ public class Game extends BasicGameState
 		{
 			if(!finished)
 			{
-				highscore.add(new HighScore(player.getRunTimeMillis()));
+				// TODO let the player enter his/her name
+				highscore.add(new HighScore(player.getRunTimeMillis(), "placeholder"));
 				saveToXML();
 			}
 			finished = true;
@@ -140,6 +144,39 @@ public class Game extends BasicGameState
 		return false;
 	}
 	
+	public void readXMLsaves(String filename)
+	{
+		Document dom;
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try
+		{
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			dom = db.parse(filename);
+			
+			Element doc = dom.getDocumentElement();
+			NodeList scoresFromXML = doc.getChildNodes();
+			
+			// save every xml score tag in highscore ArrayList
+			for (int i = 0; i<scoresFromXML.getLength(); i++)
+			{
+				NodeList thisscore = scoresFromXML.item(i).getChildNodes();
+				highscore.add(new HighScore(Long.parseLong(thisscore.item(0).getTextContent()), thisscore.item(1).getTextContent()));
+			}
+		}
+		catch (ParserConfigurationException pce) 
+		{
+            System.out.println(pce.getMessage());
+        } 
+		catch (SAXException se) 
+		{
+            System.out.println(se.getMessage());
+        } 
+		catch (IOException ioe) 
+		{
+            System.err.println(ioe.getMessage());
+        }
+	}
+	
 	public void saveToXML()
 	{
 		Document doc;
@@ -155,8 +192,11 @@ public class Game extends BasicGameState
 			{
 				Element score = doc.createElement("score");
 				Element time = doc.createElement("Zeit");
+				Element name = doc.createElement("Name");
 				time.appendChild(doc.createTextNode(h.getTimeString()));
+				name.appendChild(doc.createTextNode(h.getName()));
 				score.appendChild(time);
+				score.appendChild(name);
 				allScores.appendChild(score);
 			}
 			
