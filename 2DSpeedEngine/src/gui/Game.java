@@ -3,6 +3,7 @@ package gui;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -160,7 +161,9 @@ public class Game extends BasicGameState
 			for (int i = 0; i<scoresFromXML.getLength(); i++)
 			{
 				NodeList thisscore = scoresFromXML.item(i).getChildNodes();
-				highscore.add(new HighScore(Long.parseLong(thisscore.item(0).getTextContent()), thisscore.item(1).getTextContent()));
+				String[] dateString = thisscore.item(2).getTextContent().split(" ");
+				String[] dateTime = dateString[3].split(":");
+				highscore.add(new HighScore(Long.parseLong(thisscore.item(0).getTextContent()), thisscore.item(1).getTextContent(), new Date(thisscore.item(2).getTextContent())));
 			}
 		}
 		catch (ParserConfigurationException pce) 
@@ -193,10 +196,13 @@ public class Game extends BasicGameState
 				Element score = doc.createElement("score");
 				Element time = doc.createElement("Zeit");
 				Element name = doc.createElement("Name");
+				Element datum = doc.createElement("Datum");
 				time.appendChild(doc.createTextNode(h.getTimeString()));
 				name.appendChild(doc.createTextNode(h.getName()));
+				datum.appendChild(doc.createTextNode(h.getDateString()));
 				score.appendChild(time);
 				score.appendChild(name);
+				score.appendChild(datum);
 				allScores.appendChild(score);
 			}
 			

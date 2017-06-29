@@ -1,15 +1,26 @@
 package game;
 
+import java.util.Date;
+
 public class HighScore 
 {
 	// TODO add more attributes like difficulty.. usw.
 	private long time;
 	private String name;
+	private Date datum;
 	
 	public HighScore(long t, String n)
 	{
 		this.time = t;
 		this.name = n;
+		this.datum = new Date();
+	}
+	
+	public HighScore(long t, String n, Date d)
+	{
+		this.time = t;
+		this.name = n;
+		this.datum = d;
 	}
 	
 	public long getTime()
@@ -25,5 +36,10 @@ public class HighScore
 	public String getName()
 	{
 		return this.name;
+	}
+	
+	public String getDateString()
+	{
+		return this.datum.toString();
 	}
 }
