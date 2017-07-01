@@ -38,6 +38,11 @@ public class HighScore
 		return this.name;
 	}
 	
+	public long getDateInMillis()
+	{
+		return this.datum.getTime();
+	}
+	
 	public String getDateString()
 	{
 		return this.datum.toString();
