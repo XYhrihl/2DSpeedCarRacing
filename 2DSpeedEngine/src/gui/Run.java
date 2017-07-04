@@ -8,6 +8,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Run extends StateBasedGame
 {
+	public static final int DIF_EINFACH = 0;
+	public static final int DIF_NORMAL = 1;
+	public static final int DIF_SCHWER = 2;
+	
 	public static int menuIndex = 0;
 	public static int gameIndex = 1;
 	public static String gamename = "2DSpeedEngine";

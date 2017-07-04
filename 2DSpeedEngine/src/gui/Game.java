@@ -36,6 +36,7 @@ public class Game extends BasicGameState
 	private int myIndex;
 	private int mPosX = 0;
 	private int mPosY = 0;
+	private int difficulty;
 	private SpeedObj player;
 	private Input input;
 	private SpeedMap map;
@@ -46,13 +47,15 @@ public class Game extends BasicGameState
 	public Game (int index)
 	{
 		myIndex = index;
-		pause = false;
-		finished = false;
-		collided = false;
 	}
 
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
 	{
+		pause = false;
+		finished = false;
+		collided = false;
+		difficulty = Run.DIF_NORMAL;
+		
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
 		highscore = new ArrayList<HighScore>();
@@ -100,7 +103,7 @@ public class Game extends BasicGameState
 			if(!finished)
 			{
 				// TODO let the player enter his/her name
-				highscore.add(new HighScore(player.getRunTimeMillis(), "placeholder"));
+				highscore.add(new HighScore(player.getRunTimeMillis(), name, difficulty));
 				saveToXML();
 			}
 			finished = true;
@@ -170,7 +173,7 @@ public class Game extends BasicGameState
 				long thisTime = Long.parseLong(thisscore.item(0).getTextContent());
 				String thisName = thisscore.item(1).getTextContent();
 				long thisTimeMillis = Long.parseLong(thisscore.item(2).getTextContent());
-				highscore.add(new HighScore(thisTime, thisName, new Date(thisTimeMillis)));
+				highscore.add(new HighScore(thisTime, thisName, difficulty, new Date(thisTimeMillis)));
 			}
 		}
 		catch (ParserConfigurationException pce) 
@@ -199,6 +202,7 @@ public class Game extends BasicGameState
 			Element doc = dom.getDocumentElement();
 			NodeList values = doc.getChildNodes();
 			name = values.item(0).getTextContent();
+			difficulty = Integer.parseInt(values.item(1).getTextContent());
 		}
 		catch (ParserConfigurationException pce) 
 		{
@@ -235,14 +239,17 @@ public class Game extends BasicGameState
 				Element score = doc.createElement("score");
 				Element time = doc.createElement("Zeit");
 				Element name = doc.createElement("Name");
+				Element diff = doc.createElement("Schwierigkeit");
 				Element datumMillis = doc.createElement("Datum_Millis");
 				Element datumString = doc.createElement("Datum");
 				time.appendChild(doc.createTextNode(h.getTimeString()));
 				name.appendChild(doc.createTextNode(h.getName()));
+				diff.appendChild(doc.createTextNode(h.getDifficulty()+""));
 				datumMillis.appendChild(doc.createTextNode(Long.toString(h.getDateInMillis())));
 				datumString.appendChild(doc.createTextNode(h.getDateString()));
 				score.appendChild(time);
 				score.appendChild(name);
+				score.appendChild(diff);
 				score.appendChild(datumMillis);
 				score.appendChild(datumString);
 				allScores.appendChild(score);

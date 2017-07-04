@@ -4,23 +4,26 @@ import java.util.Date;
 
 public class HighScore 
 {
-	// TODO add more attributes like difficulty.. usw.
+	
 	private long time;
 	private String name;
 	private Date datum;
+	private int difficulty;
 	
-	public HighScore(long t, String n)
+	public HighScore(long t, String n, int dif)
 	{
 		this.time = t;
 		this.name = n;
+		this.difficulty = dif;
 		this.datum = new Date();
 	}
 	
-	public HighScore(long t, String n, Date d)
+	public HighScore(long t, String n, int dif, Date dat)
 	{
 		this.time = t;
 		this.name = n;
-		this.datum = d;
+		this.difficulty = dif;
+		this.datum = dat;
 	}
 	
 	public long getTime()
@@ -46,5 +49,10 @@ public class HighScore
 	public String getDateString()
 	{
 		return this.datum.toString();
+	}
+	
+	public int getDifficulty()
+	{
+		return this.difficulty;
 	}
 }
