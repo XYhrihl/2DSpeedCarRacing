@@ -15,6 +15,7 @@ public class Run extends StateBasedGame
 	public static int screenHeight = 0;
 	
 	public static Color backgroundColor = new Color(26,120,50);
+	public static Color hoverColor = new Color(30,180,60);
 	
 	public Run(String name) 
 	{

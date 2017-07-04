@@ -41,6 +41,7 @@ public class Game extends BasicGameState
 	private SpeedMap map;
 	private boolean pause, finished, collided;
 	private ArrayList<HighScore> highscore;
+	private String name;
 	
 	public Game (int index)
 	{
@@ -58,6 +59,11 @@ public class Game extends BasicGameState
 		readXMLsaves("save/highscore.xml");
 	}
 
+	public void enter(GameContainer gc, StateBasedGame sbg)
+	{
+		readXMLValues("save/values.xml");
+	}
+	
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
 	{
 		map.render(0, 0);
@@ -179,6 +185,38 @@ public class Game extends BasicGameState
 		{
             System.err.println(ioe.getMessage());
         }
+	}
+	
+	public void readXMLValues(String filename)
+	{
+		Document dom;
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try
+		{
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			dom = db.parse(filename);
+			
+			Element doc = dom.getDocumentElement();
+			NodeList values = doc.getChildNodes();
+			name = values.item(0).getTextContent();
+		}
+		catch (ParserConfigurationException pce) 
+		{
+            System.out.println(pce.getMessage());
+        } 
+		catch (SAXException se) 
+		{
+            System.out.println(se.getMessage());
+        } 
+		catch (IOException ioe) 
+		{
+            System.err.println(ioe.getMessage());
+        }
+		
+		if (name == null)
+		{
+			name = "";
+		}
 	}
 	
 	public void saveToXML()
