@@ -31,6 +31,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import game.HighScore;
+import game.SpeedMap;
 
 public class Menu extends BasicGameState
 {
@@ -40,6 +41,7 @@ public class Menu extends BasicGameState
 	private int difficulty;
 	private String buttonClicked = "none";
 	private ArrayList<HighScore> highscore;
+	private ArrayList<SpeedMap> allMaps;
 	private boolean hoverPlay = false;
 	private boolean hoverExit = false;
 	private int diffhover = -1;
@@ -70,6 +72,9 @@ public class Menu extends BasicGameState
 		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
 		txtFieldFont = new TrueTypeFont(textFont, true);
 		txtField = new TextField(gc, txtFieldFont, Run.screenWidth/4*3+15, Run.screenHeight/8, Run.screenWidth/4-50, 36);
+		
+		allMaps = new ArrayList<SpeedMap>();
+		loadMaps();
 		
 		highscore = new ArrayList<HighScore>();
 		readXMLsaves("save/highscore.xml");
@@ -164,6 +169,27 @@ public class Menu extends BasicGameState
 			g.setColor(Run.backgroundColor);
 		}
 		g.drawString("Schwer", Run.screenWidth/9*5+55, Run.screenHeight/15);
+		
+		// map selection
+		int y_mapNullpoint = Run.screenHeight/16*3;
+		g.setColor(Color.white);
+		g.fillRect(Run.screenWidth/3+20, y_mapNullpoint, Run.screenWidth/3-40, Run.screenHeight/4*3);
+		g.setColor(Run.backgroundColor);
+		g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+4, Run.screenWidth/3-48, Run.screenHeight/4*3-8);
+		g.setColor(Color.white);
+		g.setFont(ttfMediumFont);
+		g.drawString("Mapauswahl:", Run.screenWidth/3+24, y_mapNullpoint-42);
+		g.setFont(txtFieldFont);
+		g.drawString("Auflösung", Run.screenWidth/9*5+60, y_mapNullpoint-34);
+				
+		// the actual maps
+		for (SpeedMap m: allMaps)
+		{
+			// TODO limit the listlenght and create more sites
+			// TODO avoid writing long mapnames onto the resolution
+			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*24);
+			g.drawString(m.getResolution(), Run.screenWidth/9*5+60, y_mapNullpoint+allMaps.indexOf(m)*24);
+		}
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
@@ -276,6 +302,25 @@ public class Menu extends BasicGameState
 		catch(ParserConfigurationException pce)
 		{
 			System.out.println("UsersXML: Error trying to instantiate DocumentBuilder " + pce);
+		}
+	}
+	
+	public void loadMaps()
+	{
+		// TODO add a name to the map to show it in the list
+		File mapDir = new File("res/maps");
+		for (File f: mapDir.listFiles())
+		{
+			try 
+			{
+				allMaps.add(new SpeedMap(f.toString()));
+			} 
+			catch (SlickException e) 
+			{
+				System.out.println("Failed to load Map at "+f.toString());
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	
