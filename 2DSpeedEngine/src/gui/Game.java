@@ -102,7 +102,6 @@ public class Game extends BasicGameState
 		{
 			if(!finished)
 			{
-				// TODO let the player enter his/her name
 				highscore.add(new HighScore(player.getRunTimeMillis(), name, difficulty));
 				saveToXML();
 			}
@@ -172,7 +171,7 @@ public class Game extends BasicGameState
 				NodeList thisscore = scoresFromXML.item(i).getChildNodes();
 				long thisTime = Long.parseLong(thisscore.item(0).getTextContent());
 				String thisName = thisscore.item(1).getTextContent();
-				long thisTimeMillis = Long.parseLong(thisscore.item(2).getTextContent());
+				long thisTimeMillis = Long.parseLong(thisscore.item(3).getTextContent());
 				highscore.add(new HighScore(thisTime, thisName, difficulty, new Date(thisTimeMillis)));
 			}
 		}
@@ -244,7 +243,7 @@ public class Game extends BasicGameState
 				Element datumString = doc.createElement("Datum");
 				time.appendChild(doc.createTextNode(h.getTimeString()));
 				name.appendChild(doc.createTextNode(h.getName()));
-				diff.appendChild(doc.createTextNode(h.getDifficulty()+""));
+				diff.appendChild(doc.createTextNode(Integer.toString(h.getDifficulty())));
 				datumMillis.appendChild(doc.createTextNode(Long.toString(h.getDateInMillis())));
 				datumString.appendChild(doc.createTextNode(h.getDateString()));
 				score.appendChild(time);

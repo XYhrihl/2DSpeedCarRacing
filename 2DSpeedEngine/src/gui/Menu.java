@@ -57,10 +57,6 @@ public class Menu extends BasicGameState
 		myIndex = index;
 	}
 	
-	//TODO
-	//TODO Bug in highscore xml datum.. long ist eine millisekunde.. wird vlt von difficulty überschieben
-	//TODO
-	
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException
 	{
 		difficulty = Run.DIF_NORMAL;
@@ -125,49 +121,49 @@ public class Menu extends BasicGameState
 		// difficulty selection
 		g.setFont(txtFieldFont);
 		g.setColor(Color.white);
-		g.drawRect(20, Run.screenHeight/16, Run.screenWidth/3-40, Run.screenHeight/16-20);
-		g.drawLine(Run.screenWidth/9+10, Run.screenHeight/16, Run.screenWidth/9+10, Run.screenHeight/8-22);
-		g.drawLine(Run.screenWidth/9*2-10, Run.screenHeight/16, Run.screenWidth/9*2-10, Run.screenHeight/8-22);
+		g.drawRect(Run.screenWidth/3+20, Run.screenHeight/16, Run.screenWidth/3-40, Run.screenHeight/16-20);
+		g.drawLine(Run.screenWidth/9*4+10, Run.screenHeight/16, Run.screenWidth/9*4+10, Run.screenHeight/8-22);
+		g.drawLine(Run.screenWidth/9*5-10, Run.screenHeight/16, Run.screenWidth/9*5-10, Run.screenHeight/8-22);
 		if (diffhover == Run.DIF_EINFACH)
 		{
 			g.setColor(Run.hoverColor);
-			g.fillRect(21, Run.screenHeight/16+1, Run.screenWidth/9-11, Run.screenHeight/16-21);
+			g.fillRect(Run.screenWidth/3+21, Run.screenHeight/16+1, Run.screenWidth/9-12, Run.screenHeight/16-21);
 			g.setColor(Color.white);
 		}
 		if (difficulty == Run.DIF_EINFACH)
 		{
-			g.fillRect(20, Run.screenHeight/16, Run.screenWidth/9-10, Run.screenHeight/16-20);
+			g.fillRect(Run.screenWidth/3+20, Run.screenHeight/16, Run.screenWidth/9-10, Run.screenHeight/16-20);
 			g.setColor(Run.backgroundColor);
 		}
-		g.drawString("Einfach", 70, Run.screenHeight/15);
+		g.drawString("Einfach", Run.screenWidth/3+70, Run.screenHeight/15);
 		
 		g.setColor(Color.white);
 		if (diffhover == Run.DIF_NORMAL)
 		{
 			g.setColor(Run.hoverColor);
-			g.fillRect(Run.screenWidth/9+11, Run.screenHeight/16+1, Run.screenWidth/9-22, Run.screenHeight/16-21);
+			g.fillRect(Run.screenWidth/9*4+11, Run.screenHeight/16+1, Run.screenWidth/9-21, Run.screenHeight/16-21);
 			g.setColor(Color.white);
 		}
 		if (difficulty == Run.DIF_NORMAL)
 		{
-			g.fillRect(Run.screenWidth/9+11, Run.screenHeight/16+1, Run.screenWidth/9-20, Run.screenHeight/16-20);
+			g.fillRect(Run.screenWidth/9*4+11, Run.screenHeight/16+1, Run.screenWidth/9-20, Run.screenHeight/16-20);
 			g.setColor(Run.backgroundColor);
 		}
-		g.drawString("Normal", Run.screenWidth/9+65, Run.screenHeight/15);
+		g.drawString("Normal", Run.screenWidth/9*4+65, Run.screenHeight/15);
 		
 		g.setColor(Color.white);
 		if (diffhover == Run.DIF_SCHWER)
 		{
 			g.setColor(Run.hoverColor);
-			g.fillRect(Run.screenWidth/9*2-9, Run.screenHeight/16+1, Run.screenWidth/9-10, Run.screenHeight/16-21);
+			g.fillRect(Run.screenWidth/9*5-9, Run.screenHeight/16+1, Run.screenWidth/9-9, Run.screenHeight/16-21);
 			g.setColor(Color.white);
 		}
 		if (difficulty == Run.DIF_SCHWER)
 		{
-			g.fillRect(Run.screenWidth/9*2-10, Run.screenHeight/16, Run.screenWidth/9-9, Run.screenHeight/16-20);
+			g.fillRect(Run.screenWidth/9*5-10, Run.screenHeight/16, Run.screenWidth/9-8, Run.screenHeight/16-20);
 			g.setColor(Run.backgroundColor);
 		}
-		g.drawString("Schwer", Run.screenWidth/9*2+55, Run.screenHeight/15);
+		g.drawString("Schwer", Run.screenWidth/9*5+55, Run.screenHeight/15);
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
@@ -179,7 +175,6 @@ public class Menu extends BasicGameState
 			sbg.enterState(Run.gameIndex);
 		}
 		
-		// mousePosition for debugshowing in render method
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
 		
@@ -197,11 +192,11 @@ public class Menu extends BasicGameState
 			hoverExit = false;
 		
 		// dif easy
-		if ((mPosX>20 && mPosX<Run.screenWidth/9+10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
+		if ((mPosX>Run.screenWidth/3+20 && mPosX<Run.screenWidth/9*4+10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			diffhover = Run.DIF_EINFACH;
-		else if ((mPosX>Run.screenWidth/9+10 && mPosX<Run.screenWidth/9*2-10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
+		else if ((mPosX>Run.screenWidth/9*4+10 && mPosX<Run.screenWidth/9*5-10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			diffhover = Run.DIF_NORMAL;
-		else if ((mPosX>Run.screenWidth/9*2-10 && mPosX<Run.screenWidth/3-20) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
+		else if ((mPosX>Run.screenWidth/9*5-10 && mPosX<Run.screenWidth/3*2-20) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			diffhover = Run.DIF_SCHWER;
 		else
 			diffhover = -1;
@@ -230,7 +225,7 @@ public class Menu extends BasicGameState
 				NodeList thisscore = scoresFromXML.item(i).getChildNodes();
 				long thisTime = Long.parseLong(thisscore.item(0).getTextContent());
 				String thisName = thisscore.item(1).getTextContent();
-				long thisTimeMillis = Long.parseLong(thisscore.item(2).getTextContent());
+				long thisTimeMillis = Long.parseLong(thisscore.item(3).getTextContent());
 				highscore.add(new HighScore(thisTime, thisName, difficulty, new Date(thisTimeMillis)));
 			}
 		}
@@ -302,15 +297,15 @@ public class Menu extends BasicGameState
 			}
 			
 			// difficulty buttons
-			if ((mPosX>20 && mPosX<Run.screenWidth/9+10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
+			if ((mPosX>Run.screenWidth/3+20 && mPosX<Run.screenWidth/9*4+10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			{
 				difficulty = Run.DIF_EINFACH;
 			}
-			if ((mPosX>Run.screenWidth/9+10 && mPosX<Run.screenWidth/9*2-10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
+			if ((mPosX>Run.screenWidth/9*4+10 && mPosX<Run.screenWidth/9*5-10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			{
 				difficulty = Run.DIF_NORMAL;
 			}
-			if ((mPosX>Run.screenWidth/9*2-10 && mPosX<Run.screenWidth/3-20) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
+			if ((mPosX>Run.screenWidth/9*5-10 && mPosX<Run.screenWidth/3*2-20) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			{
 				difficulty = Run.DIF_SCHWER;
 			}

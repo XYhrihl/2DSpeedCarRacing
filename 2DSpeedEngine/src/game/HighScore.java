@@ -55,4 +55,9 @@ public class HighScore
 	{
 		return this.difficulty;
 	}
+	
+	public String toString()
+	{
+		return "HighScore Obj: time "+time+" | name "+name+" | difficulty "+difficulty+" | dateMillis "+datum.getTime()+" | dateString "+datum.toString();
+	}
 }
