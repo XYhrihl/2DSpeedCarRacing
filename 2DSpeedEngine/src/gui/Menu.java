@@ -33,6 +33,8 @@ import org.xml.sax.SAXException;
 import game.HighScore;
 import game.SpeedMap;
 
+// TODO BETA avoid writing long mapnames onto the resolution
+
 public class Menu extends BasicGameState
 {
 	private int myIndex;
@@ -42,9 +44,11 @@ public class Menu extends BasicGameState
 	private String buttonClicked = "none";
 	private ArrayList<HighScore> highscore;
 	private ArrayList<SpeedMap> allMaps;
+	private SpeedMap activeMap;
 	private boolean hoverPlay = false;
 	private boolean hoverExit = false;
 	private int diffhover = -1;
+	private int maphover = -1;
 	
 	private Font buttonFont;
 	private TrueTypeFont ttfButtonFont;
@@ -75,6 +79,14 @@ public class Menu extends BasicGameState
 		
 		allMaps = new ArrayList<SpeedMap>();
 		loadMaps();
+		if (allMaps.size()>0)
+		{
+			activeMap = allMaps.get(0);
+		}
+		else
+		{
+			System.out.println("[ERROR]: No Maps found!");
+		}
 		
 		highscore = new ArrayList<HighScore>();
 		readXMLsaves("save/highscore.xml");
@@ -186,7 +198,19 @@ public class Menu extends BasicGameState
 		for (SpeedMap m: allMaps)
 		{
 			// TODO limit the listlenght and create more sites
-			// TODO avoid writing long mapnames onto the resolution
+			
+			g.setColor(Color.white);
+			if (maphover == allMaps.indexOf(m))
+			{
+				g.setColor(Run.hoverColor);
+				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+maphover*24+4, Run.screenWidth/3-48, 24);
+				g.setColor(Color.white);
+			}
+			if (activeMap == m)
+			{
+				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+allMaps.indexOf(m)*24+4, Run.screenWidth/3-48, 24);
+				g.setColor(Run.backgroundColor);
+			}
 			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*24);
 			g.drawString(m.getResolution(), Run.screenWidth/9*5+60, y_mapNullpoint+allMaps.indexOf(m)*24);
 		}
@@ -217,7 +241,7 @@ public class Menu extends BasicGameState
 		else
 			hoverExit = false;
 		
-		// dif easy
+		// dif hover
 		if ((mPosX>Run.screenWidth/3+20 && mPosX<Run.screenWidth/9*4+10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			diffhover = Run.DIF_EINFACH;
 		else if ((mPosX>Run.screenWidth/9*4+10 && mPosX<Run.screenWidth/9*5-10) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
@@ -226,6 +250,20 @@ public class Menu extends BasicGameState
 			diffhover = Run.DIF_SCHWER;
 		else
 			diffhover = -1;
+		
+		// map hover
+		int y_mapNullPoint = Run.screenHeight/16*13+4;
+		if ((mPosX>Run.screenWidth/3+24 && mPosX<Run.screenWidth/3*2-24) && (mPosY>Run.screenHeight/16+4 && mPosY<y_mapNullPoint))
+		{
+			if (mPosY<y_mapNullPoint-allMaps.size()*24)
+				maphover = -1;
+			else
+				maphover = (y_mapNullPoint-mPosY)/24;
+		}
+		else
+		{
+			maphover = -1;
+		}
 	}
 
 	public int getID() 
@@ -353,6 +391,16 @@ public class Menu extends BasicGameState
 			if ((mPosX>Run.screenWidth/9*5-10 && mPosX<Run.screenWidth/3*2-20) && (mPosY<Run.screenHeight/16*15+8 && mPosY>Run.screenHeight/8*7+20))
 			{
 				difficulty = Run.DIF_SCHWER;
+			}
+			
+			// map selection
+			int y_mapNullpoint = Run.screenHeight/16*3;
+			if ((x>Run.screenWidth/3+24 && x<Run.screenWidth/3*2-24) && (y<Run.screenWidth/3-48 && y>y_mapNullpoint))
+			{
+				if (y<y_mapNullpoint+allMaps.size()*24)
+				{
+					activeMap = allMaps.get((y-y_mapNullpoint)/24);
+				}
 			}
 		}
 	}
