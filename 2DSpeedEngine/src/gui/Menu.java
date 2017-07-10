@@ -45,6 +45,8 @@ public class Menu extends BasicGameState
 	private ArrayList<HighScore> highscore;
 	private ArrayList<SpeedMap> allMaps;
 	private SpeedMap activeMap;
+	private boolean includeAllMaps = false;
+	private boolean includeAllDiffs = false;
 	private boolean hoverPlay = false;
 	private boolean hoverExit = false;
 	private int diffhover = -1;
@@ -55,7 +57,7 @@ public class Menu extends BasicGameState
 	private Font mediumFont;
 	private TrueTypeFont ttfMediumFont;
 	private Font textFont;
-	private TrueTypeFont txtFieldFont;
+	private TrueTypeFont ttfTextFont;
 	private TextField txtField;
 	
 	public Menu(int index)
@@ -74,8 +76,8 @@ public class Menu extends BasicGameState
 		ttfMediumFont = new TrueTypeFont(mediumFont, true);
 		
 		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
-		txtFieldFont = new TrueTypeFont(textFont, true);
-		txtField = new TextField(gc, txtFieldFont, Run.screenWidth/4*3+15, Run.screenHeight/8, Run.screenWidth/4-50, 36);
+		ttfTextFont = new TrueTypeFont(textFont, true);
+		txtField = new TextField(gc, ttfTextFont, Run.screenWidth/4*3+15, Run.screenHeight/8, Run.screenWidth/4-50, 36);
 		
 		allMaps = new ArrayList<SpeedMap>();
 		loadMaps();
@@ -94,6 +96,7 @@ public class Menu extends BasicGameState
 	
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
+		highscore.clear();
 		readXMLsaves("save/highscore.xml");
 	}
 	
@@ -136,7 +139,7 @@ public class Menu extends BasicGameState
 		txtField.render(gc, g);
 		
 		// difficulty selection
-		g.setFont(txtFieldFont);
+		g.setFont(ttfTextFont);
 		g.setColor(Color.white);
 		g.drawRect(Run.screenWidth/3+20, Run.screenHeight/16, Run.screenWidth/3-40, Run.screenHeight/16-20);
 		g.drawLine(Run.screenWidth/9*4+10, Run.screenHeight/16, Run.screenWidth/9*4+10, Run.screenHeight/8-22);
@@ -191,7 +194,7 @@ public class Menu extends BasicGameState
 		g.setColor(Color.white);
 		g.setFont(ttfMediumFont);
 		g.drawString("Mapauswahl:", Run.screenWidth/3+24, y_mapNullpoint-42);
-		g.setFont(txtFieldFont);
+		g.setFont(ttfTextFont);
 		g.drawString("Auflösung", Run.screenWidth/9*5+60, y_mapNullpoint-34);
 				
 		// the actual maps
@@ -203,17 +206,64 @@ public class Menu extends BasicGameState
 			if (maphover == allMaps.indexOf(m))
 			{
 				g.setColor(Run.hoverColor);
-				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+maphover*24+4, Run.screenWidth/3-48, 24);
+				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+maphover*28+4, Run.screenWidth/3-48, 28);
 				g.setColor(Color.white);
 			}
 			if (activeMap == m)
 			{
-				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+allMaps.indexOf(m)*24+4, Run.screenWidth/3-48, 24);
+				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+allMaps.indexOf(m)*28+4, Run.screenWidth/3-48, 28);
 				g.setColor(Run.backgroundColor);
 			}
-			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*24);
-			g.drawString(m.getResolution(), Run.screenWidth/9*5+60, y_mapNullpoint+allMaps.indexOf(m)*24);
+			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*28);
+			g.drawString(m.getResolution(), Run.screenWidth/9*5+60, y_mapNullpoint+allMaps.indexOf(m)*28);
 		}
+		
+		// highscores
+		g.setColor(Color.white);
+		g.fillRect(60, Run.screenHeight/32+4, 30, 30);
+		if (includeAllMaps)
+			g.setColor(Color.lightGray);
+		else
+			g.setColor(Run.backgroundColor);
+		g.fillRect(64, Run.screenHeight/32+8, 22, 22);
+		g.setColor(Color.white);
+		g.setFont(ttfTextFont);
+		g.drawString("Alle Maps anzeigen", 110, Run.screenHeight/32);
+		
+		g.fillRect(60, Run.screenHeight/32+64, 30, 30);
+		if (includeAllDiffs)
+			g.setColor(Color.lightGray);
+		else
+			g.setColor(Run.backgroundColor);
+		g.fillRect(64, Run.screenHeight/32+68, 22, 22);
+		g.setColor(Color.white);
+		g.setFont(ttfTextFont);
+		g.drawString("Alle Schwierigkeiten anzeigen", 110, Run.screenHeight/32+60);
+		
+		g.fillRect(20, y_mapNullpoint, Run.screenWidth/3-40, Run.screenHeight/4*3);
+		g.setColor(Run.backgroundColor);
+		g.fillRect(24, y_mapNullpoint+4, Run.screenWidth/3-48, Run.screenHeight/4*3-8);
+		g.setColor(Color.white);
+		g.setFont(ttfMediumFont);
+		g.drawString("HighScores:", 24, y_mapNullpoint-42);
+		
+		g.drawLine(20, y_mapNullpoint+32, Run.screenWidth/3-24, y_mapNullpoint+32);
+		g.drawLine(20, y_mapNullpoint+31, Run.screenWidth/3-24, y_mapNullpoint+31);
+		g.drawLine(20, y_mapNullpoint+33, Run.screenWidth/3-24, y_mapNullpoint+33);
+		g.drawLine(Run.screenWidth/3-128, y_mapNullpoint, Run.screenWidth/3-128, Run.screenHeight/16*15);
+		g.setFont(ttfTextFont);
+		g.drawString("Spieler:", 28, y_mapNullpoint);
+		g.drawString("Zeit[s]", Run.screenWidth/3-124, y_mapNullpoint);
+		
+		ArrayList<HighScore> showHighScores = calcShowHighScores();
+		
+		for (HighScore h: showHighScores)
+		{
+			g.drawString(h.getName(), 28, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
+			g.drawString(h.getTimeString(), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
+			g.drawLine(24, y_mapNullpoint+(showHighScores.indexOf(h)+2)*28+4, Run.screenWidth/3-24, y_mapNullpoint+(showHighScores.indexOf(h)+2)*28+4);
+		}
+
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
@@ -255,10 +305,10 @@ public class Menu extends BasicGameState
 		int y_mapNullPoint = Run.screenHeight/16*13+4;
 		if ((mPosX>Run.screenWidth/3+24 && mPosX<Run.screenWidth/3*2-24) && (mPosY>Run.screenHeight/16+4 && mPosY<y_mapNullPoint))
 		{
-			if (mPosY<y_mapNullPoint-allMaps.size()*24)
+			if (mPosY<y_mapNullPoint-allMaps.size()*28)
 				maphover = -1;
 			else
-				maphover = (y_mapNullPoint-mPosY)/24;
+				maphover = (y_mapNullPoint-mPosY)/28;
 		}
 		else
 		{
@@ -271,6 +321,45 @@ public class Menu extends BasicGameState
 		return myIndex;
 	}
 
+	@SuppressWarnings("unchecked")
+	public ArrayList<HighScore> calcShowHighScores()
+	{
+		ArrayList<HighScore> retList = new ArrayList<HighScore>();
+	
+		// TODO check the other cases
+		// TODO add numbers
+		if (!includeAllDiffs && !includeAllMaps)
+		{
+			retList = sortScores((ArrayList<HighScore>) highscore.clone());
+		}
+		
+		return retList;
+	}
+	
+	public ArrayList<HighScore> sortScores(ArrayList<HighScore> scores)
+	{
+		ArrayList<HighScore> retList = new ArrayList<HighScore>();
+		
+		while (scores.size()>0)
+		{
+			long min = Long.MAX_VALUE;
+			int index = -1;
+			
+			for (HighScore h: scores)
+			{
+				if (h.getTime()<min)
+				{
+					min = h.getTime();
+					index = scores.indexOf(h);
+				}
+			}
+			retList.add(scores.get(index));
+			scores.remove(index);
+		}
+		
+		return retList;
+	}
+	
 	public void readXMLsaves(String filename)
 	{
 		Document dom;
@@ -358,7 +447,6 @@ public class Menu extends BasicGameState
 				System.out.println("Failed to load Map at "+f.toString());
 				e.printStackTrace();
 			}
-			
 		}
 	}
 	
@@ -395,13 +483,21 @@ public class Menu extends BasicGameState
 			
 			// map selection
 			int y_mapNullpoint = Run.screenHeight/16*3;
-			if ((x>Run.screenWidth/3+24 && x<Run.screenWidth/3*2-24) && (y<Run.screenWidth/3-48 && y>y_mapNullpoint))
+			if ((x>Run.screenWidth/3+24 && x<Run.screenWidth/3*2-24) && (y<Run.screenWidth/3-48 && y>y_mapNullpoint-4))
 			{
-				if (y<y_mapNullpoint+allMaps.size()*24)
+				if (y<y_mapNullpoint+allMaps.size()*28+4)
 				{
-					activeMap = allMaps.get((y-y_mapNullpoint)/24);
+					activeMap = allMaps.get((y-y_mapNullpoint-4)/28);
 				}
 			}
+			
+			// toggle includeAllMaps
+			if ((x>60 && x<90) && (y>Run.screenHeight/32+4 && y<Run.screenHeight/32+34))
+				includeAllMaps = !includeAllMaps;
+			
+			// toggle includeAllDiffs
+			if ((x>60 && x<90) && (y>Run.screenHeight/32+64 && y<Run.screenHeight/32+94))
+				includeAllDiffs = !includeAllDiffs;
 		}
 	}
 }
