@@ -219,6 +219,7 @@ public class Menu extends BasicGameState
 		}
 		
 		// highscores
+		// checkboxes top
 		g.setColor(Color.white);
 		g.fillRect(60, Run.screenHeight/32+4, 30, 30);
 		if (includeAllMaps)
@@ -240,6 +241,7 @@ public class Menu extends BasicGameState
 		g.setFont(ttfTextFont);
 		g.drawString("Alle Schwierigkeiten anzeigen", 110, Run.screenHeight/32+60);
 		
+		// the border
 		g.fillRect(20, y_mapNullpoint, Run.screenWidth/3-40, Run.screenHeight/4*3);
 		g.setColor(Run.backgroundColor);
 		g.fillRect(24, y_mapNullpoint+4, Run.screenWidth/3-48, Run.screenHeight/4*3-8);
@@ -251,19 +253,23 @@ public class Menu extends BasicGameState
 		g.drawLine(20, y_mapNullpoint+31, Run.screenWidth/3-24, y_mapNullpoint+31);
 		g.drawLine(20, y_mapNullpoint+33, Run.screenWidth/3-24, y_mapNullpoint+33);
 		g.drawLine(Run.screenWidth/3-128, y_mapNullpoint, Run.screenWidth/3-128, Run.screenHeight/16*15);
+		g.drawLine(63, y_mapNullpoint, 63, Run.screenHeight/16*15);
 		g.setFont(ttfTextFont);
-		g.drawString("Spieler:", 28, y_mapNullpoint);
+		g.drawString("Spieler:", 68, y_mapNullpoint);
 		g.drawString("Zeit[s]", Run.screenWidth/3-124, y_mapNullpoint);
 		
+		// the actual highscores
+		// TODO limit listlenght --> more sites
+		// TODO maybe move logic into update?
 		ArrayList<HighScore> showHighScores = calcShowHighScores();
 		
 		for (HighScore h: showHighScores)
 		{
-			g.drawString(h.getName(), 28, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
-			g.drawString(h.getTimeString(), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
+			g.drawString(String.valueOf(showHighScores.indexOf(h)+1)+".", 28, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
+			g.drawString(h.getName(), 68, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
+			g.drawString(String.valueOf(h.getTime()/1000)+"."+String.valueOf(h.getTime()%1000), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
 			g.drawLine(24, y_mapNullpoint+(showHighScores.indexOf(h)+2)*28+4, Run.screenWidth/3-24, y_mapNullpoint+(showHighScores.indexOf(h)+2)*28+4);
 		}
-
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
@@ -324,14 +330,10 @@ public class Menu extends BasicGameState
 	@SuppressWarnings("unchecked")
 	public ArrayList<HighScore> calcShowHighScores()
 	{
-		ArrayList<HighScore> retList = new ArrayList<HighScore>();
+		ArrayList<HighScore> retList = (ArrayList<HighScore>) highscore.clone();
 	
-		// TODO check the other cases
-		// TODO add numbers
-		if (!includeAllDiffs && !includeAllMaps)
-		{
-			retList = sortScores((ArrayList<HighScore>) highscore.clone());
-		}
+		retList = selectScores(retList);
+		retList = sortScores(retList);
 		
 		return retList;
 	}
@@ -356,6 +358,73 @@ public class Menu extends BasicGameState
 			retList.add(scores.get(index));
 			scores.remove(index);
 		}
+		return retList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<HighScore> selectScores (ArrayList<HighScore> scores)
+	{
+		//ArrayList<HighScore> retList = new ArrayList<HighScore>();
+		ArrayList<HighScore> retList = (ArrayList<HighScore>) scores.clone();
+		
+		// TODO check if this stuff works in all cases:
+		if (!includeAllDiffs)
+		{
+			for (HighScore h: scores)
+			{
+				if (h.getDifficulty()!=difficulty)
+				{
+					retList.remove(retList.indexOf(h));
+				}
+			}
+		}
+		
+		if (!includeAllMaps)
+		{
+			for (HighScore h: scores)
+			{
+				if (!(h.getMapName().equals(activeMap.getMapName())))
+				{
+					retList.remove(retList.indexOf(h));
+				}
+			}
+		}
+		
+		// Backup for this above
+//		if (includeAllDiffs && includeAllMaps)
+//		{
+//			retList = scores;
+//		}
+//		else if (!includeAllDiffs && includeAllMaps)
+//		{
+//			for (HighScore h: scores)
+//			{
+//				if (h.getDifficulty()==difficulty)
+//				{
+//					retList.add(h);
+//				}
+//			}
+//		}
+//		else if (includeAllDiffs && !includeAllMaps)
+//		{
+//			for (HighScore h: scores)
+//			{
+//				if (h.getMapName().equals(activeMap.getMapName()))
+//				{
+//					retList.add(h);
+//				}
+//			}
+//		}
+//		else if (!includeAllDiffs && !includeAllMaps)
+//		{
+//			for (HighScore h: scores)
+//			{
+//				if (h.getDifficulty()==difficulty && h.getMapName().equals(activeMap.getMapName()))
+//				{
+//					retList.add(h);
+//				}
+//			}
+//		}
 		
 		return retList;
 	}
@@ -378,8 +447,10 @@ public class Menu extends BasicGameState
 				NodeList thisscore = scoresFromXML.item(i).getChildNodes();
 				long thisTime = Long.parseLong(thisscore.item(0).getTextContent());
 				String thisName = thisscore.item(1).getTextContent();
+				int thisDifficulty = Integer.parseInt(thisscore.item(2).getTextContent());
 				long thisTimeMillis = Long.parseLong(thisscore.item(3).getTextContent());
-				highscore.add(new HighScore(thisTime, thisName, difficulty, new Date(thisTimeMillis)));
+				String thisMapName = thisscore.item(5).getTextContent();
+				highscore.add(new HighScore(thisTime, thisName, thisDifficulty, thisMapName, new Date(thisTimeMillis)));
 			}
 		}
 		catch (ParserConfigurationException pce) 

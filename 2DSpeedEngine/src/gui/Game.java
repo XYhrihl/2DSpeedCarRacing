@@ -102,7 +102,7 @@ public class Game extends BasicGameState
 		{
 			if(!finished)
 			{
-				highscore.add(new HighScore(player.getRunTimeMillis(), name, difficulty));
+				highscore.add(new HighScore(player.getRunTimeMillis(), name, difficulty, map.getMapName()));
 				saveToXML();
 			}
 			finished = true;
@@ -171,8 +171,10 @@ public class Game extends BasicGameState
 				NodeList thisscore = scoresFromXML.item(i).getChildNodes();
 				long thisTime = Long.parseLong(thisscore.item(0).getTextContent());
 				String thisName = thisscore.item(1).getTextContent();
+				int thisDifficulty = Integer.parseInt(thisscore.item(2).getTextContent());
 				long thisTimeMillis = Long.parseLong(thisscore.item(3).getTextContent());
-				highscore.add(new HighScore(thisTime, thisName, difficulty, new Date(thisTimeMillis)));
+				String thisMapName = thisscore.item(5).getTextContent();
+				highscore.add(new HighScore(thisTime, thisName, thisDifficulty, thisMapName, new Date(thisTimeMillis)));
 			}
 		}
 		catch (ParserConfigurationException pce) 
@@ -241,16 +243,19 @@ public class Game extends BasicGameState
 				Element diff = doc.createElement("Schwierigkeit");
 				Element datumMillis = doc.createElement("Datum_Millis");
 				Element datumString = doc.createElement("Datum");
+				Element mapsv = doc.createElement("Map");
 				time.appendChild(doc.createTextNode(h.getTimeString()));
 				name.appendChild(doc.createTextNode(h.getName()));
 				diff.appendChild(doc.createTextNode(Integer.toString(h.getDifficulty())));
 				datumMillis.appendChild(doc.createTextNode(Long.toString(h.getDateInMillis())));
 				datumString.appendChild(doc.createTextNode(h.getDateString()));
+				mapsv.appendChild(doc.createTextNode(map.getMapName()));
 				score.appendChild(time);
 				score.appendChild(name);
 				score.appendChild(diff);
 				score.appendChild(datumMillis);
 				score.appendChild(datumString);
+				score.appendChild(mapsv);
 				allScores.appendChild(score);
 			}
 			

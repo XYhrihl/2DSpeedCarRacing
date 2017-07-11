@@ -9,20 +9,23 @@ public class HighScore
 	private String name;
 	private Date datum;
 	private int difficulty;
+	private String mapName;
 	
-	public HighScore(long t, String n, int dif)
+	public HighScore(long t, String n, int dif, String m)
 	{
 		this.time = t;
 		this.name = n;
 		this.difficulty = dif;
+		this.mapName = m;
 		this.datum = new Date();
 	}
 	
-	public HighScore(long t, String n, int dif, Date dat)
+	public HighScore(long t, String n, int dif, String m, Date dat)
 	{
 		this.time = t;
 		this.name = n;
 		this.difficulty = dif;
+		this.mapName = m;
 		this.datum = dat;
 	}
 	
@@ -59,5 +62,10 @@ public class HighScore
 	public String toString()
 	{
 		return "HighScore Obj: time "+time+" | name "+name+" | difficulty "+difficulty+" | dateMillis "+datum.getTime()+" | dateString "+datum.toString();
+	}
+	
+	public String getMapName()
+	{
+		return this.mapName;
 	}
 }
