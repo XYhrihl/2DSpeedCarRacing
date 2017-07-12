@@ -19,6 +19,7 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
@@ -43,6 +44,7 @@ public class Menu extends BasicGameState
 	private int difficulty;
 	private String buttonClicked = "none";
 	private ArrayList<HighScore> highscore;
+	private ArrayList<HighScore> showHighScores;
 	private ArrayList<SpeedMap> allMaps;
 	private SpeedMap activeMap;
 	private boolean includeAllMaps = false;
@@ -51,6 +53,16 @@ public class Menu extends BasicGameState
 	private boolean hoverExit = false;
 	private int diffhover = -1;
 	private int maphover = -1;
+	private int arrowhover = -1;
+	private int maxMapsPerSite;
+	private int maxScoresPerSite;
+	private int mapSite = 1;
+	private int scoresSite = 1;
+	
+	private Image arrowNext;
+	private Image arrowNextHovered;
+	private Image arrowPrev;
+	private Image arrowPrevHovered;
 	
 	private Font buttonFont;
 	private TrueTypeFont ttfButtonFont;
@@ -68,6 +80,11 @@ public class Menu extends BasicGameState
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException
 	{
 		difficulty = Run.DIF_NORMAL;
+		
+		arrowNext = new Image("res/pic/arrow_next.png");
+		arrowNextHovered = new Image("res/pic/arrow_next_hover.png");
+		arrowPrev = new Image("res/pic/arrow_prev.png");
+		arrowPrevHovered = new Image("res/pic/arrow_prev_hover.png");
 		
 		buttonFont = new Font(Font.MONOSPACED, Font.BOLD, 56);
 		ttfButtonFont = new TrueTypeFont(buttonFont, true);
@@ -90,12 +107,17 @@ public class Menu extends BasicGameState
 			System.out.println("[ERROR]: No Maps found!");
 		}
 		
+		showHighScores = new ArrayList<HighScore>();
 		highscore = new ArrayList<HighScore>();
 		readXMLsaves("save/highscore.xml");
+		
+		maxScoresPerSite = (Run.screenHeight/4*3-8)/28-1;
+		maxMapsPerSite = (Run.screenHeight/4*3-8)/28;
 	}
 	
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
+		showHighScores.clear();
 		highscore.clear();
 		readXMLsaves("save/highscore.xml");
 	}
@@ -252,24 +274,40 @@ public class Menu extends BasicGameState
 		g.drawLine(20, y_mapNullpoint+32, Run.screenWidth/3-24, y_mapNullpoint+32);
 		g.drawLine(20, y_mapNullpoint+31, Run.screenWidth/3-24, y_mapNullpoint+31);
 		g.drawLine(20, y_mapNullpoint+33, Run.screenWidth/3-24, y_mapNullpoint+33);
-		g.drawLine(Run.screenWidth/3-128, y_mapNullpoint, Run.screenWidth/3-128, Run.screenHeight/16*15);
-		g.drawLine(63, y_mapNullpoint, 63, Run.screenHeight/16*15);
+		g.drawLine(Run.screenWidth/3-128, y_mapNullpoint, Run.screenWidth/3-128, Run.screenHeight/16*15+4);
+		g.drawLine(63, y_mapNullpoint, 63, Run.screenHeight/16*15+4);
 		g.setFont(ttfTextFont);
 		g.drawString("Spieler:", 68, y_mapNullpoint);
 		g.drawString("Zeit[s]", Run.screenWidth/3-124, y_mapNullpoint);
 		
 		// the actual highscores
-		// TODO limit listlenght --> more sites
-		// TODO maybe move logic into update?
-		ArrayList<HighScore> showHighScores = calcShowHighScores();
-		
 		for (HighScore h: showHighScores)
 		{
-			g.drawString(String.valueOf(showHighScores.indexOf(h)+1)+".", 28, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
-			g.drawString(h.getName(), 68, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
-			g.drawString(String.valueOf(h.getTime()/1000)+"."+String.valueOf(h.getTime()%1000), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)+1)*28);
-			g.drawLine(24, y_mapNullpoint+(showHighScores.indexOf(h)+2)*28+4, Run.screenWidth/3-24, y_mapNullpoint+(showHighScores.indexOf(h)+2)*28+4);
+			if ((showHighScores.indexOf(h)>=(scoresSite-1)*maxScoresPerSite) && (showHighScores.indexOf(h)<scoresSite*maxScoresPerSite))
+			{
+				g.drawString(String.valueOf(showHighScores.indexOf(h)+1)+".", 28, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+1)*28);
+				g.drawString(h.getName(), 68, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+1)*28);
+				g.drawString(String.valueOf(h.getTime()/1000)+"."+String.valueOf(h.getTime()%1000), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+1)*28);
+				if (showHighScores.indexOf(h)%maxScoresPerSite!=maxScoresPerSite-1)
+					g.drawLine(24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+2)*28+4, Run.screenWidth/3-24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+2)*28+4);
+			}
 		}
+		
+		// the site number and selection arrows
+		g.setFont(ttfMediumFont);
+		g.drawString(String.valueOf(scoresSite), Run.screenWidth/18*3-16, Run.screenHeight/16*15+12);
+		if (arrowhover == 0)
+			g.drawImage(arrowPrevHovered, Run.screenWidth/18*3-210, Run.screenHeight/16*15+20);
+		else
+			g.drawImage(arrowPrev, Run.screenWidth/18*3-210, Run.screenHeight/16*15+20);
+			
+		
+		if (arrowhover == 1)
+			g.drawImage(arrowNextHovered, Run.screenWidth/18*3+82, Run.screenHeight/16*15+20);
+		else
+			g.drawImage(arrowNext, Run.screenWidth/18*3+82, Run.screenHeight/16*15+20);
+
+		showHighScores.clear();
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
@@ -280,6 +318,8 @@ public class Menu extends BasicGameState
 			saveValuesToXML();
 			sbg.enterState(Run.gameIndex);
 		}
+		
+		showHighScores = calcShowHighScores();
 		
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
@@ -319,6 +359,25 @@ public class Menu extends BasicGameState
 		else
 		{
 			maphover = -1;
+		}
+		
+		// arrow hover
+		if (mPosY<Run.screenHeight/16-12 && mPosY>Run.screenHeight/16-44)
+		{
+			if (mPosX>Run.screenWidth/18*3-210 && mPosX<Run.screenWidth/18*3-82)
+				arrowhover = 0;
+			else if (mPosX>Run.screenWidth/18*3+82 && mPosX<Run.screenWidth/18*3+210)
+				arrowhover = 1;
+			else if (mPosX>Run.screenWidth/18*6-210 && mPosX<Run.screenWidth/18*6-82)
+				arrowhover = 2;
+			else if (mPosX>Run.screenWidth/18*6+82 && mPosX<Run.screenWidth/18*6+210)
+				arrowhover = 3;
+			else
+				arrowhover = -1;
+		}
+		else
+		{
+			arrowhover = -1;
 		}
 	}
 
@@ -364,10 +423,8 @@ public class Menu extends BasicGameState
 	@SuppressWarnings("unchecked")
 	public ArrayList<HighScore> selectScores (ArrayList<HighScore> scores)
 	{
-		//ArrayList<HighScore> retList = new ArrayList<HighScore>();
 		ArrayList<HighScore> retList = (ArrayList<HighScore>) scores.clone();
 		
-		// TODO check if this stuff works in all cases:
 		if (!includeAllDiffs)
 		{
 			for (HighScore h: scores)
@@ -389,42 +446,6 @@ public class Menu extends BasicGameState
 				}
 			}
 		}
-		
-		// Backup for this above
-//		if (includeAllDiffs && includeAllMaps)
-//		{
-//			retList = scores;
-//		}
-//		else if (!includeAllDiffs && includeAllMaps)
-//		{
-//			for (HighScore h: scores)
-//			{
-//				if (h.getDifficulty()==difficulty)
-//				{
-//					retList.add(h);
-//				}
-//			}
-//		}
-//		else if (includeAllDiffs && !includeAllMaps)
-//		{
-//			for (HighScore h: scores)
-//			{
-//				if (h.getMapName().equals(activeMap.getMapName()))
-//				{
-//					retList.add(h);
-//				}
-//			}
-//		}
-//		else if (!includeAllDiffs && !includeAllMaps)
-//		{
-//			for (HighScore h: scores)
-//			{
-//				if (h.getDifficulty()==difficulty && h.getMapName().equals(activeMap.getMapName()))
-//				{
-//					retList.add(h);
-//				}
-//			}
-//		}
 		
 		return retList;
 	}
@@ -569,6 +590,8 @@ public class Menu extends BasicGameState
 			// toggle includeAllDiffs
 			if ((x>60 && x<90) && (y>Run.screenHeight/32+64 && y<Run.screenHeight/32+94))
 				includeAllDiffs = !includeAllDiffs;
+			
+			// TODO arrows
 		}
 	}
 }
