@@ -239,6 +239,22 @@ public class Menu extends BasicGameState
 			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*28);
 			g.drawString(m.getResolution(), Run.screenWidth/9*5+60, y_mapNullpoint+allMaps.indexOf(m)*28);
 		}
+		// the map arrows
+		g.setColor(Color.white);
+		g.setFont(ttfMediumFont);
+		g.drawString(String.valueOf(mapSite), Run.screenWidth/2-16, Run.screenHeight/16*15+12);
+		if (arrowhover == 2)
+			g.drawImage(arrowPrevHovered, Run.screenWidth/2-210, Run.screenHeight/16*15+20);
+		else
+			g.drawImage(arrowPrev, Run.screenWidth/2-210, Run.screenHeight/16*15+20);
+			
+		
+		if (arrowhover == 3)
+			g.drawImage(arrowNextHovered, Run.screenWidth/2+82, Run.screenHeight/16*15+20);
+		else
+			g.drawImage(arrowNext, Run.screenWidth/2+82, Run.screenHeight/16*15+20);
+
+		
 		
 		// highscores
 		// checkboxes top
@@ -307,7 +323,6 @@ public class Menu extends BasicGameState
 		else
 			g.drawImage(arrowNext, Run.screenWidth/18*3+82, Run.screenHeight/16*15+20);
 
-		showHighScores.clear();
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
@@ -368,9 +383,9 @@ public class Menu extends BasicGameState
 				arrowhover = 0;
 			else if (mPosX>Run.screenWidth/18*3+82 && mPosX<Run.screenWidth/18*3+210)
 				arrowhover = 1;
-			else if (mPosX>Run.screenWidth/18*6-210 && mPosX<Run.screenWidth/18*6-82)
+			else if (mPosX>Run.screenWidth/2-210 && mPosX<Run.screenWidth/2-82)
 				arrowhover = 2;
-			else if (mPosX>Run.screenWidth/18*6+82 && mPosX<Run.screenWidth/18*6+210)
+			else if (mPosX>Run.screenWidth/2+82 && mPosX<Run.screenWidth/2+210)
 				arrowhover = 3;
 			else
 				arrowhover = -1;
@@ -592,6 +607,19 @@ public class Menu extends BasicGameState
 				includeAllDiffs = !includeAllDiffs;
 			
 			// TODO arrows
+			if (y>Run.screenHeight/16*15+20 && y<Run.screenHeight/16*15+52)
+			{
+				if(x>Run.screenWidth/18*3-210 && x<Run.screenWidth/18*3-82)
+				{
+					if(scoresSite>1)
+						scoresSite --;
+				}
+				if(x>Run.screenWidth/18*3+82 && x<Run.screenWidth/18*3+210)
+				{
+					if(scoresSite<showHighScores.size()/maxScoresPerSite+1)
+						scoresSite ++;
+				}
+			}
 		}
 	}
 }
