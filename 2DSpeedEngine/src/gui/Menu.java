@@ -54,10 +54,10 @@ public class Menu extends BasicGameState
 	private int diffhover = -1;
 	private int maphover = -1;
 	private int arrowhover = -1;
-	private int maxMapsPerSite;
-	private int maxScoresPerSite;
-	private int mapSite = 1;
-	private int scoresSite = 1;
+	private int maxMapsPerPage;
+	private int maxScoresPerPage;
+	private int mapPage = 1;
+	private int scoresPage = 1;
 	
 	private Image arrowNext;
 	private Image arrowNextHovered;
@@ -111,8 +111,8 @@ public class Menu extends BasicGameState
 		highscore = new ArrayList<HighScore>();
 		readXMLsaves("save/highscore.xml");
 		
-		maxScoresPerSite = (Run.screenHeight/4*3-8)/28-1;
-		maxMapsPerSite = (Run.screenHeight/4*3-8)/28;
+		maxScoresPerPage = (Run.screenHeight/4*3-8)/28-1;
+		maxMapsPerPage = (Run.screenHeight/4*3-8)/28;
 	}
 	
 	public void enter(GameContainer gc, StateBasedGame sbg)
@@ -222,8 +222,6 @@ public class Menu extends BasicGameState
 		// the actual maps
 		for (SpeedMap m: allMaps)
 		{
-			// TODO limit the listlenght and create more sites
-			
 			g.setColor(Color.white);
 			if (maphover == allMaps.indexOf(m))
 			{
@@ -242,20 +240,17 @@ public class Menu extends BasicGameState
 		// the map arrows
 		g.setColor(Color.white);
 		g.setFont(ttfMediumFont);
-		g.drawString(String.valueOf(mapSite), Run.screenWidth/2-16, Run.screenHeight/16*15+12);
+		g.drawString(String.valueOf(mapPage), Run.screenWidth/2-16, Run.screenHeight/16*15+12);
 		if (arrowhover == 2)
 			g.drawImage(arrowPrevHovered, Run.screenWidth/2-210, Run.screenHeight/16*15+20);
 		else
 			g.drawImage(arrowPrev, Run.screenWidth/2-210, Run.screenHeight/16*15+20);
 			
-		
 		if (arrowhover == 3)
 			g.drawImage(arrowNextHovered, Run.screenWidth/2+82, Run.screenHeight/16*15+20);
 		else
 			g.drawImage(arrowNext, Run.screenWidth/2+82, Run.screenHeight/16*15+20);
 
-		
-		
 		// highscores
 		// checkboxes top
 		g.setColor(Color.white);
@@ -291,33 +286,32 @@ public class Menu extends BasicGameState
 		g.drawLine(20, y_mapNullpoint+31, Run.screenWidth/3-24, y_mapNullpoint+31);
 		g.drawLine(20, y_mapNullpoint+33, Run.screenWidth/3-24, y_mapNullpoint+33);
 		g.drawLine(Run.screenWidth/3-128, y_mapNullpoint, Run.screenWidth/3-128, Run.screenHeight/16*15+4);
-		g.drawLine(63, y_mapNullpoint, 63, Run.screenHeight/16*15+4);
+		g.drawLine(72, y_mapNullpoint, 72, Run.screenHeight/16*15+4);
 		g.setFont(ttfTextFont);
-		g.drawString("Spieler:", 68, y_mapNullpoint);
+		g.drawString("Spieler:", 80, y_mapNullpoint);
 		g.drawString("Zeit[s]", Run.screenWidth/3-124, y_mapNullpoint);
 		
 		// the actual highscores
 		for (HighScore h: showHighScores)
 		{
-			if ((showHighScores.indexOf(h)>=(scoresSite-1)*maxScoresPerSite) && (showHighScores.indexOf(h)<scoresSite*maxScoresPerSite))
+			if ((showHighScores.indexOf(h)>=(scoresPage-1)*maxScoresPerPage) && (showHighScores.indexOf(h)<scoresPage*maxScoresPerPage))
 			{
-				g.drawString(String.valueOf(showHighScores.indexOf(h)+1)+".", 28, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+1)*28);
-				g.drawString(h.getName(), 68, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+1)*28);
-				g.drawString(String.valueOf(h.getTime()/1000)+"."+String.valueOf(h.getTime()%1000), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+1)*28);
-				if (showHighScores.indexOf(h)%maxScoresPerSite!=maxScoresPerSite-1)
-					g.drawLine(24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+2)*28+4, Run.screenWidth/3-24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerSite+2)*28+4);
+				g.drawString(String.valueOf(showHighScores.indexOf(h)+1)+".", 28, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
+				g.drawString(h.getName(), 80, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
+				g.drawString(String.valueOf(h.getTime()/1000)+"."+String.valueOf(h.getTime()%1000), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
+				if (showHighScores.indexOf(h)%maxScoresPerPage!=maxScoresPerPage-1)
+					g.drawLine(24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+2)*28+4, Run.screenWidth/3-24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+2)*28+4);
 			}
 		}
 		
 		// the site number and selection arrows
 		g.setFont(ttfMediumFont);
-		g.drawString(String.valueOf(scoresSite), Run.screenWidth/18*3-16, Run.screenHeight/16*15+12);
+		g.drawString(String.valueOf(scoresPage), Run.screenWidth/18*3-16, Run.screenHeight/16*15+12);
 		if (arrowhover == 0)
 			g.drawImage(arrowPrevHovered, Run.screenWidth/18*3-210, Run.screenHeight/16*15+20);
 		else
 			g.drawImage(arrowPrev, Run.screenWidth/18*3-210, Run.screenHeight/16*15+20);
 			
-		
 		if (arrowhover == 1)
 			g.drawImage(arrowNextHovered, Run.screenWidth/18*3+82, Run.screenHeight/16*15+20);
 		else
@@ -606,18 +600,28 @@ public class Menu extends BasicGameState
 			if ((x>60 && x<90) && (y>Run.screenHeight/32+64 && y<Run.screenHeight/32+94))
 				includeAllDiffs = !includeAllDiffs;
 			
-			// TODO arrows
+			// arrows
 			if (y>Run.screenHeight/16*15+20 && y<Run.screenHeight/16*15+52)
 			{
 				if(x>Run.screenWidth/18*3-210 && x<Run.screenWidth/18*3-82)
 				{
-					if(scoresSite>1)
-						scoresSite --;
+					if(scoresPage>1)
+						scoresPage --;
 				}
 				if(x>Run.screenWidth/18*3+82 && x<Run.screenWidth/18*3+210)
 				{
-					if(scoresSite<showHighScores.size()/maxScoresPerSite+1)
-						scoresSite ++;
+					if(scoresPage<showHighScores.size()/maxScoresPerPage+1)
+						scoresPage ++;
+				}
+				if(x>Run.screenWidth/2-210 && x<Run.screenWidth/2-82)
+				{
+					if(mapPage>1)
+						mapPage --;
+				}
+				if(x>Run.screenWidth/2+82 && x<Run.screenWidth/2+210)
+				{
+					if(mapPage<allMaps.size()/maxMapsPerPage+1)
+						mapPage ++;
 				}
 			}
 		}

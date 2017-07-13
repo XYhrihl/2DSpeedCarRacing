@@ -11,6 +11,10 @@ import gui.Run;
 
 public class SpeedObj 
 {
+	public static final int DIF_EINFACH_FACTOR = 400000;
+	public static final int DIF_NORMAL_FACTOR = 100000;
+	public static final int DIF_SCHWER_FACTOR = 50000;
+	
 	private Shape hitbox;
 	
 	private float xMomentum, yMomentum;
@@ -45,7 +49,7 @@ public class SpeedObj
 		yTile = startTile[1];
 		xPos = xTile*map.getTileWidth()+sizeX;
 		yPos = yTile*map.getTileHeight()+sizeY;
-		accelFactor = 100000;
+		accelFactor = DIF_NORMAL_FACTOR;
 		maparea = "start";
 		
 		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
@@ -110,7 +114,6 @@ public class SpeedObj
 	public void accelerateToPosition (int x, int y, int delta)
 	{
 		// TODO balance acceleration-rate in this method
-		// TODO add difficulty which influences the speed factor
 		if (maparea != "pause" && maparea != "collided")
 		{
 			xMomentum = xMomentum + (x-this.getxPos())*delta/accelFactor;
@@ -253,6 +256,11 @@ public class SpeedObj
 		maparea = "collided";
 		xMomentum = xMomentum * 0.8F;
 		yMomentum = yMomentum * 0.8F;
+	}
+	
+	public void setAccelFactor(int factor)
+	{
+		this.accelFactor = factor;
 	}
 	
 	//Getter und Setter:

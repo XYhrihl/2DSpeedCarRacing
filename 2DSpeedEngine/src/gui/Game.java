@@ -65,6 +65,14 @@ public class Game extends BasicGameState
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
 		readXMLValues("save/values.xml");
+		if (difficulty == Run.DIF_EINFACH)
+			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
+		else if (difficulty == Run.DIF_NORMAL)
+			player.setAccelFactor(SpeedObj.DIF_NORMAL_FACTOR);
+		else if (difficulty == Run.DIF_SCHWER)
+			player.setAccelFactor(SpeedObj.DIF_SCHWER_FACTOR);
+		else
+			System.out.println("[ERROR]: Failed to set difficulty! defaulting to Normal.");
 	}
 	
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
