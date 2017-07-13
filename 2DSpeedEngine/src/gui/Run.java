@@ -8,6 +8,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Run extends StateBasedGame
 {
+	public static final int DIF_EINFACH = 0;
+	public static final int DIF_NORMAL = 1;
+	public static final int DIF_SCHWER = 2;
+	
 	public static int menuIndex = 0;
 	public static int gameIndex = 1;
 	public static String gamename = "2DSpeedEngine";
@@ -15,6 +19,7 @@ public class Run extends StateBasedGame
 	public static int screenHeight = 0;
 	
 	public static Color backgroundColor = new Color(26,120,50);
+	public static Color hoverColor = new Color(30,180,60);
 	
 	public Run(String name) 
 	{
@@ -39,7 +44,8 @@ public class Run extends StateBasedGame
 			appgc = new AppGameContainer(new Run(gamename));
 			screenWidth = appgc.getScreenWidth();
 			screenHeight = appgc.getScreenHeight();
-			//appgc.setTargetFrameRate(200);
+			//appgc.setShowFPS(false);
+			appgc.setTargetFrameRate(200);
 			appgc.setDisplayMode(screenWidth, screenHeight, false);
 			appgc.setFullscreen(true); // need exit button in all states for true
 			appgc.start();

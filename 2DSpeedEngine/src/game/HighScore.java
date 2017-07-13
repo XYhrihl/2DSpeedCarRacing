@@ -1,15 +1,32 @@
 package game;
 
+import java.util.Date;
+
 public class HighScore 
 {
-	// TODO add more attributes like difficulty.. usw.
+	
 	private long time;
 	private String name;
+	private Date datum;
+	private int difficulty;
+	private String mapName;
 	
-	public HighScore(long t, String n)
+	public HighScore(long t, String n, int dif, String m)
 	{
 		this.time = t;
 		this.name = n;
+		this.difficulty = dif;
+		this.mapName = m;
+		this.datum = new Date();
+	}
+	
+	public HighScore(long t, String n, int dif, String m, Date dat)
+	{
+		this.time = t;
+		this.name = n;
+		this.difficulty = dif;
+		this.mapName = m;
+		this.datum = dat;
 	}
 	
 	public long getTime()
@@ -25,5 +42,30 @@ public class HighScore
 	public String getName()
 	{
 		return this.name;
+	}
+	
+	public long getDateInMillis()
+	{
+		return this.datum.getTime();
+	}
+	
+	public String getDateString()
+	{
+		return this.datum.toString();
+	}
+	
+	public int getDifficulty()
+	{
+		return this.difficulty;
+	}
+	
+	public String toString()
+	{
+		return "HighScore Obj: time "+time+" | name "+name+" | difficulty "+difficulty+" | dateMillis "+datum.getTime()+" | dateString "+datum.toString();
+	}
+	
+	public String getMapName()
+	{
+		return this.mapName;
 	}
 }

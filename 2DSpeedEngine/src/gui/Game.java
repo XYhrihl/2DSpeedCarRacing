@@ -3,6 +3,7 @@ package gui;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,28 +36,45 @@ public class Game extends BasicGameState
 	private int myIndex;
 	private int mPosX = 0;
 	private int mPosY = 0;
+	private int difficulty;
 	private SpeedObj player;
 	private Input input;
 	private SpeedMap map;
 	private boolean pause, finished, collided;
 	private ArrayList<HighScore> highscore;
+	private String name;
 	
 	public Game (int index)
 	{
 		myIndex = index;
-		pause = false;
-		finished = false;
-		collided = false;
 	}
 
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
 	{
+		pause = false;
+		finished = false;
+		collided = false;
+		difficulty = Run.DIF_NORMAL;
+		
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
 		highscore = new ArrayList<HighScore>();
-		readXMLsaves("./save/highscore.xml");
+		readXMLsaves("save/highscore.xml");
 	}
 
+	public void enter(GameContainer gc, StateBasedGame sbg)
+	{
+		readXMLValues("save/values.xml");
+		if (difficulty == Run.DIF_EINFACH)
+			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
+		else if (difficulty == Run.DIF_NORMAL)
+			player.setAccelFactor(SpeedObj.DIF_NORMAL_FACTOR);
+		else if (difficulty == Run.DIF_SCHWER)
+			player.setAccelFactor(SpeedObj.DIF_SCHWER_FACTOR);
+		else
+			System.out.println("[ERROR]: Failed to set difficulty! defaulting to Normal.");
+	}
+	
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
 	{
 		map.render(0, 0);
@@ -92,8 +110,7 @@ public class Game extends BasicGameState
 		{
 			if(!finished)
 			{
-				// TODO let the player enter his/her name
-				highscore.add(new HighScore(player.getRunTimeMillis(), "placeholder"));
+				highscore.add(new HighScore(player.getRunTimeMillis(), name, difficulty, map.getMapName()));
 				saveToXML();
 			}
 			finished = true;
@@ -160,7 +177,12 @@ public class Game extends BasicGameState
 			for (int i = 0; i<scoresFromXML.getLength(); i++)
 			{
 				NodeList thisscore = scoresFromXML.item(i).getChildNodes();
-				highscore.add(new HighScore(Long.parseLong(thisscore.item(0).getTextContent()), thisscore.item(1).getTextContent()));
+				long thisTime = Long.parseLong(thisscore.item(0).getTextContent());
+				String thisName = thisscore.item(1).getTextContent();
+				int thisDifficulty = Integer.parseInt(thisscore.item(2).getTextContent());
+				long thisTimeMillis = Long.parseLong(thisscore.item(3).getTextContent());
+				String thisMapName = thisscore.item(5).getTextContent();
+				highscore.add(new HighScore(thisTime, thisName, thisDifficulty, thisMapName, new Date(thisTimeMillis)));
 			}
 		}
 		catch (ParserConfigurationException pce) 
@@ -175,6 +197,39 @@ public class Game extends BasicGameState
 		{
             System.err.println(ioe.getMessage());
         }
+	}
+	
+	public void readXMLValues(String filename)
+	{
+		Document dom;
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try
+		{
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			dom = db.parse(filename);
+			
+			Element doc = dom.getDocumentElement();
+			NodeList values = doc.getChildNodes();
+			name = values.item(0).getTextContent();
+			difficulty = Integer.parseInt(values.item(1).getTextContent());
+		}
+		catch (ParserConfigurationException pce) 
+		{
+            System.out.println(pce.getMessage());
+        } 
+		catch (SAXException se) 
+		{
+            System.out.println(se.getMessage());
+        } 
+		catch (IOException ioe) 
+		{
+            System.err.println(ioe.getMessage());
+        }
+		
+		if (name == null)
+		{
+			name = "";
+		}
 	}
 	
 	public void saveToXML()
@@ -193,10 +248,22 @@ public class Game extends BasicGameState
 				Element score = doc.createElement("score");
 				Element time = doc.createElement("Zeit");
 				Element name = doc.createElement("Name");
+				Element diff = doc.createElement("Schwierigkeit");
+				Element datumMillis = doc.createElement("Datum_Millis");
+				Element datumString = doc.createElement("Datum");
+				Element mapsv = doc.createElement("Map");
 				time.appendChild(doc.createTextNode(h.getTimeString()));
 				name.appendChild(doc.createTextNode(h.getName()));
+				diff.appendChild(doc.createTextNode(Integer.toString(h.getDifficulty())));
+				datumMillis.appendChild(doc.createTextNode(Long.toString(h.getDateInMillis())));
+				datumString.appendChild(doc.createTextNode(h.getDateString()));
+				mapsv.appendChild(doc.createTextNode(map.getMapName()));
 				score.appendChild(time);
 				score.appendChild(name);
+				score.appendChild(diff);
+				score.appendChild(datumMillis);
+				score.appendChild(datumString);
+				score.appendChild(mapsv);
 				allScores.appendChild(score);
 			}
 			
@@ -206,7 +273,7 @@ public class Game extends BasicGameState
 			{
 				Transformer tr = TransformerFactory.newInstance().newTransformer();
 				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(new File("./save/highscore.xml"));
+				StreamResult result = new StreamResult(new File("save/highscore.xml"));
 				tr.transform(source, result);
 			}
 			catch (TransformerException te) 

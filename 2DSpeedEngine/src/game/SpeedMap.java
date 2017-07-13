@@ -5,9 +5,16 @@ import org.newdawn.slick.tiled.TiledMap;
 
 public class SpeedMap extends TiledMap
 {
+	// TODO add a name to the map to show it in main menu
+	private String mapName;
+	// TODO add the mapresolution to show it in main menu
+	private String resolution;
+	
 	public SpeedMap(String ref) throws SlickException 
 	{
 		super(ref);
+		mapName = "default";
+		resolution = "1920x1080";
 	}
 	
 	// TODO add MapName
@@ -26,5 +33,15 @@ public class SpeedMap extends TiledMap
 			}
 		}
 		return new int[] {-1, -1};
+	}
+	
+	public String getMapName()
+	{
+		return this.mapName;
+	}
+	
+	public String getResolution()
+	{
+		return this.resolution;
 	}
 }
