@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="18" height="12" tilewidth="20" tileheight="20" backgroundcolor="#cccccc" nextobjectid="1">
+ <properties>
+  <property name="Kartenname" value="Tutorial Map"/>
+ </properties>
+ <tileset firstgid="1" name="colors" tilewidth="20" tileheight="20" tilecount="840" columns="42">
+  <image source="../Tiled-Resources/colors.png" width="842" height="402"/>
+  <tile id="0">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="150">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="264">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="484">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="startarea" value="true"/>
+    <property name="startposition" value="start"/>
+   </properties>
+  </tile>
+  <tile id="524">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="startarea" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Kachelebene 1" width="18" height="12">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NkYGBgpBLmZcKOuYFynIwIPJ0BO0Y35ykjBFNqDqXuwSU/GM3Bhkk1h1g83M2hBgYAjItQAWADAAA=
+  </data>
+ </layer>
+</map>

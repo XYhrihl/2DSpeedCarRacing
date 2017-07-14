@@ -7,17 +7,15 @@ public class SpeedMap extends TiledMap
 {
 	// TODO add a name to the map to show it in main menu
 	private String mapName;
-	// TODO add the mapresolution to show it in main menu
 	private String resolution;
 	
 	public SpeedMap(String ref) throws SlickException 
 	{
 		super(ref);
-		mapName = "default";
-		resolution = "1920x1080";
+		mapName = this.getMapProperty("Kartenname", "failed");
+		resolution = this.width*this.tileWidth+"x"+this.height*this.tileHeight;
 	}
 	
-	// TODO add MapName
 	public int[] getStartPos()
 	{
 		for(int i = 0; i < this.getWidth(); i++)

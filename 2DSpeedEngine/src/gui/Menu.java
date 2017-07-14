@@ -509,10 +509,13 @@ public class Menu extends BasicGameState
 			Element allValues = doc.createElement("allValues");
 			Element name = doc.createElement("Name");
 			Element diff = doc.createElement("Schwierigkeit");
+			Element mapname = doc.createElement("Mapname");
 			name.appendChild(doc.createTextNode(txtField.getText()));
 			diff.appendChild(doc.createTextNode(difficulty+""));
+			mapname.appendChild(doc.createTextNode(activeMap.getMapName()));
 			allValues.appendChild(name);
 			allValues.appendChild(diff);
+			allValues.appendChild(mapname);
 			doc.appendChild(allValues);
 			
 			try
@@ -535,12 +538,12 @@ public class Menu extends BasicGameState
 	
 	public void loadMaps()
 	{
-		// TODO add a name to the map to show it in the list
 		File mapDir = new File("res/maps");
 		for (File f: mapDir.listFiles())
 		{
 			try 
 			{
+				System.out.println(f.toString());
 				allMaps.add(new SpeedMap(f.toString()));
 			} 
 			catch (SlickException e) 

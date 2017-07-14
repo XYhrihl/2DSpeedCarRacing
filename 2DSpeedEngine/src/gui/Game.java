@@ -39,6 +39,7 @@ public class Game extends BasicGameState
 	private int difficulty;
 	private SpeedObj player;
 	private Input input;
+	private ArrayList<SpeedMap> allMaps;
 	private SpeedMap map;
 	private boolean pause, finished, collided;
 	private ArrayList<HighScore> highscore;
@@ -60,6 +61,8 @@ public class Game extends BasicGameState
 		player = new SpeedObj(map);
 		highscore = new ArrayList<HighScore>();
 		readXMLsaves("save/highscore.xml");
+		allMaps = new ArrayList<SpeedMap>();
+		loadMaps();
 	}
 
 	public void enter(GameContainer gc, StateBasedGame sbg)
@@ -212,6 +215,11 @@ public class Game extends BasicGameState
 			NodeList values = doc.getChildNodes();
 			name = values.item(0).getTextContent();
 			difficulty = Integer.parseInt(values.item(1).getTextContent());
+			for (SpeedMap m: allMaps)
+			{
+				if (m.getMapName().equals(values.item(2).getTextContent()))
+					map = m;
+			}
 		}
 		catch (ParserConfigurationException pce) 
 		{
@@ -284,6 +292,23 @@ public class Game extends BasicGameState
 		catch(ParserConfigurationException pce)
 		{
 			System.out.println("UsersXML: Error trying to instantiate DocumentBuilder " + pce);
+		}
+	}
+	
+	public void loadMaps()
+	{
+		File mapDir = new File("res/maps");
+		for (File f: mapDir.listFiles())
+		{
+			try 
+			{
+				allMaps.add(new SpeedMap(f.toString()));
+			} 
+			catch (SlickException e) 
+			{
+				System.out.println("Failed to load Map at "+f.toString());
+				e.printStackTrace();
+			}
 		}
 	}
 	

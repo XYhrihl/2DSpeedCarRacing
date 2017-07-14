@@ -11,6 +11,7 @@ import gui.Run;
 
 public class SpeedObj 
 {
+	// TODO balance acceleration-rate here
 	public static final int DIF_EINFACH_FACTOR = 400000;
 	public static final int DIF_NORMAL_FACTOR = 100000;
 	public static final int DIF_SCHWER_FACTOR = 50000;
@@ -113,7 +114,6 @@ public class SpeedObj
 	
 	public void accelerateToPosition (int x, int y, int delta)
 	{
-		// TODO balance acceleration-rate in this method
 		if (maparea != "pause" && maparea != "collided")
 		{
 			xMomentum = xMomentum + (x-this.getxPos())*delta/accelFactor;
