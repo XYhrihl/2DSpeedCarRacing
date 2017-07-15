@@ -17,13 +17,13 @@ public class SpeedObj
 	public static final int DIF_SCHWER_FACTOR = 50000;
 	
 	private Shape hitbox;
+	private SpeedMap map;
 	
 	private float xMomentum, yMomentum;
 	private float xPos, yPos;
 	private int xTile, yTile;
 	private final float sizeX = 20, sizeY = 10;
 	private long runtime;
-	//private long starttime, finishtime, runtime, showtime;
 	private ArrayList<PauseState> pauses = new ArrayList<PauseState>();
 	private int accelFactor;
 	
@@ -41,10 +41,10 @@ public class SpeedObj
 	private float[] cornerY = new float[6];
 	
 	private float lastTransformRad = 0;
-	//private PauseState pauseState;
 	
 	public SpeedObj(SpeedMap map)
 	{
+		this.map = map;
 		int[] startTile = map.getStartPos();
 		xTile = startTile[0];
 		yTile = startTile[1];
@@ -107,8 +107,8 @@ public class SpeedObj
 	
 	public int[] getTilePos(float x, float y)
 	{
-		xTile = (int)x/48;
-		yTile = (int)y/24;
+		xTile = (int)x/map.getTileWidth();
+		yTile = (int)y/map.getTileHeight();
 		return new int[]{xTile, yTile};
 	}
 	
@@ -174,7 +174,7 @@ public class SpeedObj
 		}
 	}
 	
-	public boolean checkCollisionstate(SpeedMap map)
+	public boolean checkCollisionstate()
 	{
 		// id 61 == false
 		// id 157 == true
@@ -182,7 +182,7 @@ public class SpeedObj
 		for (int i = 0; i < 4; i++)
 		{
 			int[] tilePos = this.getTilePos(cornerX[i+2], cornerY[i+2]);
-			if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "collision", "notFound") == map.getTileProperty(157, "collision", "xxx"))
+			if (map.checkForCollisionAt(tilePos[0], tilePos[1]))
 			{
 				retvalue = true;
 			}

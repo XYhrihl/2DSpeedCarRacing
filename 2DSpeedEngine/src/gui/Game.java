@@ -68,6 +68,7 @@ public class Game extends BasicGameState
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
 		readXMLValues("save/values.xml");
+		player = new SpeedObj(map);
 		if (difficulty == Run.DIF_EINFACH)
 			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
 		else if (difficulty == Run.DIF_NORMAL)
@@ -126,7 +127,7 @@ public class Game extends BasicGameState
 		
 		player.updatePosition(delta);
 		
-		if(player.checkCollisionstate(map))
+		if(player.checkCollisionstate())
 		{
 			player.collided();
 			if (player.getxMomentum()<0.05F && player.getyMomentum()<0.05F)

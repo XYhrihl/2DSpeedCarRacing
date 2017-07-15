@@ -5,7 +5,6 @@ import org.newdawn.slick.tiled.TiledMap;
 
 public class SpeedMap extends TiledMap
 {
-	// TODO add a name to the map to show it in main menu
 	private String mapName;
 	private String resolution;
 	
@@ -22,15 +21,25 @@ public class SpeedMap extends TiledMap
 		{
 			for(int j = 0; j < this.getHeight(); j++)
 			{
-				// id from the starting tile is 122
-				// TODO read the propertys to be able to use other IDs
-				if(this.getTileId(i, j, 0)==122)
+				if (this.getTileProperty(this.getTileId(i, j, 0), "startposition", "false").equals("start"))
 				{
 					return new int[] {i, j};
 				}
 			}
 		}
 		return new int[] {-1, -1};
+	}
+	
+	public boolean checkForCollisionAt (int x, int y)
+	{
+		boolean ret = false;
+		
+		if (this.getTileProperty(this.getTileId(x, y, 0), "collision", "notfount").equals("true"))
+		{
+			ret = true;
+		}
+		
+		return ret;
 	}
 	
 	public String getMapName()

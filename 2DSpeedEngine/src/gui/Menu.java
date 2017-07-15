@@ -445,6 +445,8 @@ public class Menu extends BasicGameState
 			}
 		}
 		
+		scores = (ArrayList<HighScore>) retList.clone();
+		
 		if (!includeAllMaps)
 		{
 			for (HighScore h: scores)
@@ -543,7 +545,6 @@ public class Menu extends BasicGameState
 		{
 			try 
 			{
-				System.out.println(f.toString());
 				allMaps.add(new SpeedMap(f.toString()));
 			} 
 			catch (SlickException e) 

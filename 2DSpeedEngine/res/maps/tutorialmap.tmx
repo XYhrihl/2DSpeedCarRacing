@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="18" height="12" tilewidth="20" tileheight="20" backgroundcolor="#cccccc" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="20" tileheight="20" backgroundcolor="#cccccc" nextobjectid="1">
  <properties>
   <property name="Kartenname" value="Tutorial Map"/>
  </properties>
@@ -40,9 +40,9 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Kachelebene 1" width="18" height="12">
+ <layer name="Kachelebene 1" width="40" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NkYGBgpBLmZcKOuYFynIwIPJ0BO0Y35ykjBFNqDqXuwSU/GM3Bhkk1h1g83M2hBgYAjItQAWADAAA=
+   H4sIAAAAAAAAC+3QPQoAIAhAYW2L6PydsHs0RLv9IEVveJvihyoiStvlYCtJL6qtMV8me91XtXer7/b/4ZvzWfdW7+HDhw8fPnwn+tXnFT58+PB5+WitBsuAbT/AEgAA
   </data>
  </layer>
 </map>
