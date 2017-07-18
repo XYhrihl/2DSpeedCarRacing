@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.w3c.dom.Document;
@@ -44,6 +46,13 @@ public class Game extends BasicGameState
 	private boolean pause, finished, collided;
 	private ArrayList<HighScore> highscore;
 	private String name;
+	private boolean tutorialhint = false;
+	private int tutorialState = 0;
+	
+	private Font mediumFont;
+	private TrueTypeFont ttfMediumFont;
+	private Font textFont;
+	private TrueTypeFont ttfTextFont;
 	
 	public Game (int index)
 	{
@@ -57,6 +66,12 @@ public class Game extends BasicGameState
 		collided = false;
 		difficulty = Run.DIF_NORMAL;
 		
+		mediumFont = new Font(Font.MONOSPACED, Font.BOLD, 32);
+		ttfMediumFont = new TrueTypeFont(mediumFont, true);
+		
+		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
+		ttfTextFont = new TrueTypeFont(textFont, true);
+		
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
 		highscore = new ArrayList<HighScore>();
@@ -68,8 +83,17 @@ public class Game extends BasicGameState
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
 		readXMLValues("save/values.xml");
+		
+		if (map.getMapName().equals("Tutorial Map"))
+			tutorialhint = true;
+		else
+			tutorialhint = false;
+		
 		player = new SpeedObj(map);
-		if (difficulty == Run.DIF_EINFACH)
+		
+		if (tutorialhint)
+			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
+		else if (difficulty == Run.DIF_EINFACH)
 			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
 		else if (difficulty == Run.DIF_NORMAL)
 			player.setAccelFactor(SpeedObj.DIF_NORMAL_FACTOR);
@@ -83,7 +107,26 @@ public class Game extends BasicGameState
 	{
 		map.render(0, 0);
 		
+		if (tutorialhint)
+		{
+			g.setColor(Color.blue);
+			g.setFont(ttfMediumFont);
+			if (tutorialState == 0)
+				g.drawString("Klicke um zu Beschleunigen!", 80, 500);
+			if (tutorialState == 1)
+				g.drawString("Klicke hinter dich um zu Bremsen!", 80, 200);
+			if (tutorialState == 2)
+				g.drawString("Klicke seitlich um zu lenken!", 200, 450);
+			if (tutorialState == 3)
+			{	
+				g.drawString("Folge dem Kurs und", 300, 200);
+				g.drawString("erriech die Grüne", 300, 250);
+				g.drawString("fläche schenllstmöglich", 300, 300);
+			}
+		}
+		
 		g.setColor(Color.black);
+		g.setFont(ttfTextFont);
 		
 		player.renderObj(g);
 		g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
@@ -134,6 +177,17 @@ public class Game extends BasicGameState
 			{
 				collided = true;
 			}
+		}
+		
+		// tutorial stuff
+		if (tutorialhint)
+		{
+			if (player.getMaparea()!="start" && tutorialState == 0)
+				tutorialState = 1;
+			if (player.getyPos()>350 && tutorialState == 1)
+				tutorialState = 2;
+			if (player.getxPos()>300 && tutorialState == 2)
+				tutorialState = 3;
 		}
 	}
 
@@ -338,6 +392,7 @@ public class Game extends BasicGameState
 				player.restartGame(map);
 				finished = false;
 				collided = false;
+				tutorialState = 0;
 			}
 		}
 	}

@@ -213,6 +213,11 @@ public class SpeedObj
 		return maparea;
 	}
 	
+	public String getMaparea()
+	{
+		return maparea;
+	}
+	
 	public long getRunTimeMillis()
 	{
 		return this.runtime;
