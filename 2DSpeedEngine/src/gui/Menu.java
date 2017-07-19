@@ -512,7 +512,11 @@ public class Menu extends BasicGameState
 			Element name = doc.createElement("Name");
 			Element diff = doc.createElement("Schwierigkeit");
 			Element mapname = doc.createElement("Mapname");
-			name.appendChild(doc.createTextNode(txtField.getText()));
+			String txtFieldString = txtField.getText();
+			if (txtFieldString.equals(""))
+				name.appendChild(doc.createTextNode("Nameless"));
+			else
+				name.appendChild(doc.createTextNode(txtFieldString));
 			diff.appendChild(doc.createTextNode(difficulty+""));
 			mapname.appendChild(doc.createTextNode(activeMap.getMapName()));
 			allValues.appendChild(name);

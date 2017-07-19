@@ -204,7 +204,7 @@ public class SpeedObj
 			}
 			else if (maparea=="run")
 			{
-				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false") == map.getTileProperty(26, "zielarea", "xxx"))
+				if (map.getTileProperty(map.getTileId(tilePos[0], tilePos[1], 0), "zielarea", "false")!="false")
 				{
 					maparea="finish";
 				}

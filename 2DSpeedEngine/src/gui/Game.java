@@ -320,7 +320,7 @@ public class Game extends BasicGameState
 				diff.appendChild(doc.createTextNode(Integer.toString(h.getDifficulty())));
 				datumMillis.appendChild(doc.createTextNode(Long.toString(h.getDateInMillis())));
 				datumString.appendChild(doc.createTextNode(h.getDateString()));
-				mapsv.appendChild(doc.createTextNode(map.getMapName()));
+				mapsv.appendChild(doc.createTextNode(h.getMapName()));
 				score.appendChild(time);
 				score.appendChild(name);
 				score.appendChild(diff);
