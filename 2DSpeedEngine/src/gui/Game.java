@@ -43,7 +43,7 @@ public class Game extends BasicGameState
 	private Input input;
 	private ArrayList<SpeedMap> allMaps;
 	private SpeedMap map;
-	private boolean pause, finished, collided;
+	private boolean pause, finished, collided, spacedown;
 	private ArrayList<HighScore> highscore;
 	private String name;
 	private boolean tutorialhint = false;
@@ -64,6 +64,7 @@ public class Game extends BasicGameState
 		pause = false;
 		finished = false;
 		collided = false;
+		spacedown = false;
 		difficulty = Run.DIF_NORMAL;
 		
 		mediumFont = new Font(Font.MONOSPACED, Font.BOLD, 32);
@@ -177,6 +178,19 @@ public class Game extends BasicGameState
 			{
 				collided = true;
 			}
+		}
+		
+		if (input.isKeyDown(Input.KEY_SPACE) && !spacedown)
+		{
+			spacedown = true;
+		}
+		if ((!input.isKeyDown(Input.KEY_SPACE)) && spacedown)
+		{
+			spacedown = false;
+			player.restartGame(map);
+			finished = false;
+			collided = false;
+			tutorialState = 0;
 		}
 		
 		// tutorial stuff
