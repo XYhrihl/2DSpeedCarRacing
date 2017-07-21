@@ -445,6 +445,8 @@ public class Menu extends BasicGameState
 			}
 		}
 		
+		scores = (ArrayList<HighScore>) retList.clone();
+		
 		if (!includeAllMaps)
 		{
 			for (HighScore h: scores)
@@ -509,10 +511,17 @@ public class Menu extends BasicGameState
 			Element allValues = doc.createElement("allValues");
 			Element name = doc.createElement("Name");
 			Element diff = doc.createElement("Schwierigkeit");
-			name.appendChild(doc.createTextNode(txtField.getText()));
+			Element mapname = doc.createElement("Mapname");
+			String txtFieldString = txtField.getText();
+			if (txtFieldString.equals(""))
+				name.appendChild(doc.createTextNode("Nameless"));
+			else
+				name.appendChild(doc.createTextNode(txtFieldString));
 			diff.appendChild(doc.createTextNode(difficulty+""));
+			mapname.appendChild(doc.createTextNode(activeMap.getMapName()));
 			allValues.appendChild(name);
 			allValues.appendChild(diff);
+			allValues.appendChild(mapname);
 			doc.appendChild(allValues);
 			
 			try
@@ -535,7 +544,6 @@ public class Menu extends BasicGameState
 	
 	public void loadMaps()
 	{
-		// TODO add a name to the map to show it in the list
 		File mapDir = new File("res/maps");
 		for (File f: mapDir.listFiles())
 		{

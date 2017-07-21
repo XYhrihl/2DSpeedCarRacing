@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.w3c.dom.Document;
@@ -39,10 +41,18 @@ public class Game extends BasicGameState
 	private int difficulty;
 	private SpeedObj player;
 	private Input input;
+	private ArrayList<SpeedMap> allMaps;
 	private SpeedMap map;
-	private boolean pause, finished, collided;
+	private boolean pause, finished, collided, spacedown;
 	private ArrayList<HighScore> highscore;
 	private String name;
+	private boolean tutorialhint = false;
+	private int tutorialState = 0;
+	
+	private Font mediumFont;
+	private TrueTypeFont ttfMediumFont;
+	private Font textFont;
+	private TrueTypeFont ttfTextFont;
 	
 	public Game (int index)
 	{
@@ -54,18 +64,37 @@ public class Game extends BasicGameState
 		pause = false;
 		finished = false;
 		collided = false;
+		spacedown = false;
 		difficulty = Run.DIF_NORMAL;
+		
+		mediumFont = new Font(Font.MONOSPACED, Font.BOLD, 32);
+		ttfMediumFont = new TrueTypeFont(mediumFont, true);
+		
+		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
+		ttfTextFont = new TrueTypeFont(textFont, true);
 		
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
 		highscore = new ArrayList<HighScore>();
 		readXMLsaves("save/highscore.xml");
+		allMaps = new ArrayList<SpeedMap>();
+		loadMaps();
 	}
 
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
 		readXMLValues("save/values.xml");
-		if (difficulty == Run.DIF_EINFACH)
+		
+		if (map.getMapName().equals("Tutorial Map"))
+			tutorialhint = true;
+		else
+			tutorialhint = false;
+		
+		player = new SpeedObj(map);
+		
+		if (tutorialhint)
+			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
+		else if (difficulty == Run.DIF_EINFACH)
 			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
 		else if (difficulty == Run.DIF_NORMAL)
 			player.setAccelFactor(SpeedObj.DIF_NORMAL_FACTOR);
@@ -79,7 +108,26 @@ public class Game extends BasicGameState
 	{
 		map.render(0, 0);
 		
+		if (tutorialhint)
+		{
+			g.setColor(Color.blue);
+			g.setFont(ttfMediumFont);
+			if (tutorialState == 0)
+				g.drawString("Klicke um zu Beschleunigen!", 80, 500);
+			if (tutorialState == 1)
+				g.drawString("Klicke hinter dich um zu Bremsen!", 80, 200);
+			if (tutorialState == 2)
+				g.drawString("Klicke seitlich um zu lenken!", 200, 450);
+			if (tutorialState == 3)
+			{	
+				g.drawString("Folge dem Kurs und", 300, 200);
+				g.drawString("erriech die Grüne", 300, 250);
+				g.drawString("fläche schenllstmöglich", 300, 300);
+			}
+		}
+		
 		g.setColor(Color.black);
+		g.setFont(ttfTextFont);
 		
 		player.renderObj(g);
 		g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
@@ -123,13 +171,37 @@ public class Game extends BasicGameState
 		
 		player.updatePosition(delta);
 		
-		if(player.checkCollisionstate(map))
+		if(player.checkCollisionstate())
 		{
 			player.collided();
 			if (player.getxMomentum()<0.05F && player.getyMomentum()<0.05F)
 			{
 				collided = true;
 			}
+		}
+		
+		if (input.isKeyDown(Input.KEY_SPACE) && !spacedown)
+		{
+			spacedown = true;
+		}
+		if ((!input.isKeyDown(Input.KEY_SPACE)) && spacedown)
+		{
+			spacedown = false;
+			player.restartGame(map);
+			finished = false;
+			collided = false;
+			tutorialState = 0;
+		}
+		
+		// tutorial stuff
+		if (tutorialhint)
+		{
+			if (player.getMaparea()!="start" && tutorialState == 0)
+				tutorialState = 1;
+			if (player.getyPos()>350 && tutorialState == 1)
+				tutorialState = 2;
+			if (player.getxPos()>300 && tutorialState == 2)
+				tutorialState = 3;
 		}
 	}
 
@@ -212,6 +284,11 @@ public class Game extends BasicGameState
 			NodeList values = doc.getChildNodes();
 			name = values.item(0).getTextContent();
 			difficulty = Integer.parseInt(values.item(1).getTextContent());
+			for (SpeedMap m: allMaps)
+			{
+				if (m.getMapName().equals(values.item(2).getTextContent()))
+					map = m;
+			}
 		}
 		catch (ParserConfigurationException pce) 
 		{
@@ -257,7 +334,7 @@ public class Game extends BasicGameState
 				diff.appendChild(doc.createTextNode(Integer.toString(h.getDifficulty())));
 				datumMillis.appendChild(doc.createTextNode(Long.toString(h.getDateInMillis())));
 				datumString.appendChild(doc.createTextNode(h.getDateString()));
-				mapsv.appendChild(doc.createTextNode(map.getMapName()));
+				mapsv.appendChild(doc.createTextNode(h.getMapName()));
 				score.appendChild(time);
 				score.appendChild(name);
 				score.appendChild(diff);
@@ -287,6 +364,23 @@ public class Game extends BasicGameState
 		}
 	}
 	
+	public void loadMaps()
+	{
+		File mapDir = new File("res/maps");
+		for (File f: mapDir.listFiles())
+		{
+			try 
+			{
+				allMaps.add(new SpeedMap(f.toString()));
+			} 
+			catch (SlickException e) 
+			{
+				System.out.println("Failed to load Map at "+f.toString());
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	//overwrite mouseReleased method for button click handling
 	public void mouseReleased(int button, int x, int y)
 	{
@@ -312,6 +406,7 @@ public class Game extends BasicGameState
 				player.restartGame(map);
 				finished = false;
 				collided = false;
+				tutorialState = 0;
 			}
 		}
 	}
