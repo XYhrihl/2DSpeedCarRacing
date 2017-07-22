@@ -111,9 +111,11 @@ public class Game extends BasicGameState
 		if (tutorialhint)
 		{
 			g.setColor(Color.blue);
+			g.setFont(ttfTextFont);
+			g.drawString("Lehrtaste --> Restart", 450, 520);
 			g.setFont(ttfMediumFont);
 			if (tutorialState == 0)
-				g.drawString("Klicke um zu Beschleunigen!", 80, 500);
+				g.drawString("Klicke um zu Beschleunigen!", 80, 480);
 			if (tutorialState == 1)
 				g.drawString("Klicke hinter dich um zu Bremsen!", 80, 200);
 			if (tutorialState == 2)

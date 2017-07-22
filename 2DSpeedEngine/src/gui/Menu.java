@@ -51,6 +51,7 @@ public class Menu extends BasicGameState
 	private boolean includeAllDiffs = false;
 	private boolean hoverPlay = false;
 	private boolean hoverExit = false;
+	private boolean mapToBig = false;
 	private int diffhover = -1;
 	private int maphover = -1;
 	private int arrowhover = -1;
@@ -117,6 +118,7 @@ public class Menu extends BasicGameState
 	
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
+		mapToBig = false;
 		showHighScores.clear();
 		highscore.clear();
 		readXMLsaves("save/highscore.xml");
@@ -139,6 +141,15 @@ public class Menu extends BasicGameState
 		g.fillRoundRect(Run.screenWidth/4*3+15, Run.screenHeight/8*2+15, Run.screenWidth/4-50, Run.screenHeight/4-30, 30);
 		g.setColor(Color.white);
 		g.drawString("SPIELEN", Run.screenWidth/4*3+110, Run.screenHeight/8*3-42);
+		
+		// massage if map is too big
+		if (mapToBig)
+		{
+			g.setColor(Color.red);
+			g.setFont(ttfMediumFont);
+			g.drawString("Die Karte ist zu Groß!", Run.screenWidth/4*3, Run.screenHeight/4-70);
+			g.setFont(ttfButtonFont);
+		}
 		
 		// exit button
 		g.setColor(Color.red);
@@ -324,8 +335,16 @@ public class Menu extends BasicGameState
 		if (buttonClicked == "play")
 		{
 			buttonClicked = "none";
-			saveValuesToXML();
-			sbg.enterState(Run.gameIndex);
+			if ((activeMap.getWidth()*activeMap.getTileWidth()>Run.screenWidth) || (activeMap.getHeight()*activeMap.getTileHeight()>Run.screenHeight))
+			{
+				mapToBig = true;
+			}
+			else
+			{
+				mapToBig = false;
+				saveValuesToXML();
+				sbg.enterState(Run.gameIndex);
+			}
 		}
 		
 		showHighScores = calcShowHighScores();
