@@ -52,7 +52,7 @@ public class Game extends BasicGameState
 	private boolean exclamationFlag = true;
 	private int tutorialState = 0;
 	private int animationState = 0;
-	private long crashStamp;
+	private long animationStamp;
 	private int exclamationCounter = 0;
 	
 	private Font mediumFont;
@@ -68,6 +68,15 @@ public class Game extends BasicGameState
 	private Animation crashedAni;
 	private Image[] crashedimgsExclamation;
 	private Animation crashedAniExclamation;
+	
+	private Image finished40;
+	private Image finished44;
+	private Image finished40big;
+	private Image exclamationGreen;
+	private Image[] finishedimgs;
+	private Animation finishedAni;
+	private Image[] finishedimgsExclamation;
+	private Animation finishedAniExclamation;
 	
 	public Game (int index)
 	{
@@ -113,6 +122,32 @@ public class Game extends BasicGameState
 		
 		crashedAni = new Animation(crashedimgs, 50);
 		crashedAniExclamation = new Animation(crashedimgsExclamation, 20);
+		
+		finished40 = new Image("res/animation/finished_40.png");
+		finished44 = new Image("res/animation/finished_44.png");
+		finished40big = new Image("res/animation/finished_40_big.png");
+		exclamationGreen = new Image("res/animation/exclamation_green.png");
+		
+		finishedimgs = new Image[12];
+		finishedimgs[0] = new Image("res/animation/finished_40_t30.png");
+		finishedimgs[1] = new Image("res/animation/finished_40_t50.png");
+		finishedimgs[2] = new Image("res/animation/finished_40_t70.png");
+		finishedimgs[3] = new Image("res/animation/finished_40_t90.png");
+		finishedimgs[4] = new Image("res/animation/finished_40_t110.png");
+		finishedimgs[5] = new Image("res/animation/finished_40_t130.png");
+		finishedimgs[6] = new Image("res/animation/finished_40_t150.png");
+		finishedimgs[7] = new Image("res/animation/finished_40_t170.png");
+		finishedimgs[8] = new Image("res/animation/finished_40_t190.png");
+		finishedimgs[9] = new Image("res/animation/finished_40_t210.png");
+		finishedimgs[10] = new Image("res/animation/finished_40_t230.png");
+		finishedimgs[11] = finished40;
+		
+		finishedimgsExclamation = new Image[2];
+		finishedimgsExclamation[0] = finished44;
+		finishedimgsExclamation[1] = finished40big;
+		
+		finishedAni = new Animation(finishedimgs, 50);
+		finishedAniExclamation = new Animation(finishedimgsExclamation, 20);
 		
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
@@ -213,9 +248,39 @@ public class Game extends BasicGameState
 			// TODO draw new Buttons
 		}
 		
+		if (animationState == 1)
+		{
+			g.drawAnimation(finishedAni, Run.screenWidth/2-138, Run.screenHeight/3);
+		}
+		else if (animationState == 2)
+		{
+			g.drawImage(finished40, Run.screenWidth/2-138, Run.screenHeight/3);
+			exclamationFlag = true;
+		}
+		else if (animationState == 3)
+		{
+			g.drawAnimation(finishedAniExclamation, Run.screenWidth/2-150, Run.screenHeight/3);
+			if (exclamationFlag)
+			{
+				exclamationCounter ++;
+				exclamationFlag = false;
+			}
+		}
+		else if (animationState == 4)
+		{
+			g.drawImage(finished44, Run.screenWidth/2-150, Run.screenHeight/3);
+			g.setColor(Run.finishColor);
+			g.setFont(ttfMediumFont);
+			g.drawString("Zeit: " + player.getRunTimeMillis() + " ms", Run.screenWidth/2-100, Run.screenHeight/3+60);
+			// TODO draw new Buttons
+		}
+		
 		for(int i = 0; i<exclamationCounter; i++)
 		{
-			g.drawImage(exclamationRed, Run.screenWidth/2+182+i*20, Run.screenHeight/3);
+			if (animationState<0)
+				g.drawImage(exclamationRed, Run.screenWidth/2+182+i*20, Run.screenHeight/3);
+			else
+				g.drawImage(exclamationGreen, Run.screenWidth/2+182+i*20, Run.screenHeight/3);
 		}
 	}
 
@@ -229,6 +294,9 @@ public class Game extends BasicGameState
 		
 		if (checkForFinish())
 		{
+			if (animationState == 0)
+				animationState = 1;
+			
 			if(!finished)
 			{
 				highscore.add(new HighScore(player.getRunTimeMillis(), name, difficulty, map.getMapName()));
@@ -246,7 +314,7 @@ public class Game extends BasicGameState
 		
 		if(player.checkCollisionstate())
 		{
-			if (animationState==0)
+			if (animationState == 0)
 				animationState = -1;
 			
 			player.collided();
@@ -256,20 +324,40 @@ public class Game extends BasicGameState
 			}
 		}
 		
+		if (animationState == 1 && finishedAni.getCurrentFrame() == finished40)
+		{
+			finishedAni.restart();
+			animationState = 2;
+			animationStamp = System.currentTimeMillis();
+		}
+		
 		if (animationState == -1 && crashedAni.getCurrentFrame() == crashed40)
 		{
 			crashedAni.restart();
 			animationState = -2;
-			crashStamp = System.currentTimeMillis();
+			animationStamp = System.currentTimeMillis();
 		}
 		
-		if (System.currentTimeMillis()-crashStamp > 400 && (animationState == -2 || animationState == -3))
+		if (System.currentTimeMillis()-animationStamp > 400 && (animationState == 2 || animationState == 3))
+		{
+			if (animationState == 2)
+				animationState = 3;
+			else if (animationState == 3)
+				animationState = 2;
+			animationStamp = System.currentTimeMillis();
+			if (exclamationCounter >= 3)
+			{
+				animationState = 4;
+			}
+		}
+		
+		if (System.currentTimeMillis()-animationStamp > 400 && (animationState == -2 || animationState == -3))
 		{
 			if (animationState == -2)
 				animationState = -3;
 			else if (animationState == -3)
 				animationState = -2;
-			crashStamp = System.currentTimeMillis();
+			animationStamp = System.currentTimeMillis();
 			if (exclamationCounter >= 3)
 			{
 				animationState = -4;

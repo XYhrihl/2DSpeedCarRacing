@@ -20,6 +20,7 @@ public class Run extends StateBasedGame
 	
 	public static Color backgroundColor = new Color(26,120,50);
 	public static Color hoverColor = new Color(30,180,60);
+	public static Color finishColor = new Color(0,230,0);
 	
 	public Run(String name) 
 	{
