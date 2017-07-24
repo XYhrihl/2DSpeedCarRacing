@@ -16,9 +16,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
@@ -47,12 +49,25 @@ public class Game extends BasicGameState
 	private ArrayList<HighScore> highscore;
 	private String name;
 	private boolean tutorialhint = false;
+	private boolean exclamationFlag = true;
 	private int tutorialState = 0;
+	private int animationState = 0;
+	private long crashStamp;
+	private int exclamationCounter = 0;
 	
 	private Font mediumFont;
 	private TrueTypeFont ttfMediumFont;
 	private Font textFont;
 	private TrueTypeFont ttfTextFont;
+	
+	private Image crashed40;
+	private Image crashed44;
+	private Image crashed40big;
+	private Image exclamationRed;
+	private Image[] crashedimgs;
+	private Animation crashedAni;
+	private Image[] crashedimgsExclamation;
+	private Animation crashedAniExclamation;
 	
 	public Game (int index)
 	{
@@ -72,6 +87,32 @@ public class Game extends BasicGameState
 		
 		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
 		ttfTextFont = new TrueTypeFont(textFont, true);
+		
+		crashed40 = new Image("res/animation/crashed_40.png");
+		crashed44 = new Image("res/animation/crashed_44.png");
+		crashed40big = new Image("res/animation/crashed_40_big.png");
+		exclamationRed = new Image("res/animation/exclamation_red.png");
+		
+		crashedimgs = new Image[12];
+		crashedimgs[0] = new Image("res/animation/crashed_40_t30.png");
+		crashedimgs[1] = new Image("res/animation/crashed_40_t50.png");
+		crashedimgs[2] = new Image("res/animation/crashed_40_t70.png");
+		crashedimgs[3] = new Image("res/animation/crashed_40_t90.png");
+		crashedimgs[4] = new Image("res/animation/crashed_40_t110.png");
+		crashedimgs[5] = new Image("res/animation/crashed_40_t130.png");
+		crashedimgs[6] = new Image("res/animation/crashed_40_t150.png");
+		crashedimgs[7] = new Image("res/animation/crashed_40_t170.png");
+		crashedimgs[8] = new Image("res/animation/crashed_40_t190.png");
+		crashedimgs[9] = new Image("res/animation/crashed_40_t210.png");
+		crashedimgs[10] = new Image("res/animation/crashed_40_t230.png");
+		crashedimgs[11] = crashed40;
+		
+		crashedimgsExclamation = new Image[2];
+		crashedimgsExclamation[0] = crashed44;
+		crashedimgsExclamation[1] = crashed40big;
+		
+		crashedAni = new Animation(crashedimgs, 50);
+		crashedAniExclamation = new Animation(crashedimgsExclamation, 20);
 		
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
@@ -139,12 +180,42 @@ public class Game extends BasicGameState
 		
 		if (pause || finished || collided)
 		{
+			// TODO draw new Buttons here
 			g.setColor(Run.backgroundColor);
 			g.fillRect(Run.screenWidth/4, Run.screenHeight/4, Run.screenWidth/2, Run.screenHeight/2);
 			g.setColor(Color.white);
 			g.fillRect(Run.screenWidth/4+Run.screenWidth/32, Run.screenHeight/4+Run.screenHeight/32, Run.screenWidth/2-Run.screenWidth/16, Run.screenHeight/4-Run.screenHeight/16);
 			g.setColor(Color.red);
 			g.fillRect(Run.screenWidth/4+Run.screenWidth/32, Run.screenHeight/2+Run.screenHeight/32, Run.screenWidth/2-Run.screenWidth/16, Run.screenHeight/4-Run.screenHeight/16);
+		}
+		
+		if (animationState == -1)
+		{
+			g.drawAnimation(crashedAni, Run.screenWidth/2-138, Run.screenHeight/3);
+		}
+		else if (animationState == -2)
+		{
+			g.drawImage(crashed40, Run.screenWidth/2-138, Run.screenHeight/3);
+			exclamationFlag = true;
+		}
+		else if (animationState == -3)
+		{
+			g.drawAnimation(crashedAniExclamation, Run.screenWidth/2-150, Run.screenHeight/3);
+			if (exclamationFlag)
+			{
+				exclamationCounter ++;
+				exclamationFlag = false;
+			}
+		}
+		else if (animationState == -4)
+		{
+			g.drawImage(crashed44, Run.screenWidth/2-150, Run.screenHeight/3);
+			// TODO draw new Buttons
+		}
+		
+		for(int i = 0; i<exclamationCounter; i++)
+		{
+			g.drawImage(exclamationRed, Run.screenWidth/2+182+i*20, Run.screenHeight/3);
 		}
 	}
 
@@ -175,10 +246,33 @@ public class Game extends BasicGameState
 		
 		if(player.checkCollisionstate())
 		{
+			if (animationState==0)
+				animationState = -1;
+			
 			player.collided();
 			if (player.getxMomentum()<0.05F && player.getyMomentum()<0.05F)
 			{
 				collided = true;
+			}
+		}
+		
+		if (animationState == -1 && crashedAni.getCurrentFrame() == crashed40)
+		{
+			crashedAni.restart();
+			animationState = -2;
+			crashStamp = System.currentTimeMillis();
+		}
+		
+		if (System.currentTimeMillis()-crashStamp > 400 && (animationState == -2 || animationState == -3))
+		{
+			if (animationState == -2)
+				animationState = -3;
+			else if (animationState == -3)
+				animationState = -2;
+			crashStamp = System.currentTimeMillis();
+			if (exclamationCounter >= 3)
+			{
+				animationState = -4;
 			}
 		}
 		
@@ -193,6 +287,8 @@ public class Game extends BasicGameState
 			finished = false;
 			collided = false;
 			tutorialState = 0;
+			animationState = 0;
+			exclamationCounter = 0;
 		}
 		
 		// tutorial stuff
@@ -409,6 +505,8 @@ public class Game extends BasicGameState
 				finished = false;
 				collided = false;
 				tutorialState = 0;
+				animationState = 0;
+				exclamationCounter = 0;
 			}
 		}
 	}
