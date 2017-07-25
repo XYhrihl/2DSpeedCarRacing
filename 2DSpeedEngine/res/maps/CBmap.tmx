@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="96" height="54" tilewidth="20" tileheight="20" backgroundcolor="#cccccc" nextobjectid="1">
+ <properties>
+  <property name="Kartenname" value="Blue CB"/>
+ </properties>
+ <tileset firstgid="1" name="colors" tilewidth="20" tileheight="20" tilecount="840" columns="42">
+  <image source="../Tiled-Resources/colors.png" width="842" height="402"/>
+  <tile id="41">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="startarea" value="true"/>
+    <property name="startposition" value="start"/>
+   </properties>
+  </tile>
+  <tile id="52">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="138">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="startarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="304">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="471">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="530">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Kachelebene 1" width="96" height="54">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3aSxKCQAwEUPAK3sKdC0/pBT2OC6XKshBnIJ10Mr3olRZkXg8Ufh7zND0URXHJbXrl/iPL68v7zyfuRHtuZW3eav5MfbTMV93fu4vemUbyR/VgMVO0/23aDlsH1vOM5r+3A9T6o/0jwmL/6X95ZwT/ng7Qc4y4/+UfHwZ7T3+GZ+7emZDu3s//CP+js8k/tgP58/oj7eX/fy5r7+/j//vcmckfMRd6vRX8EfsSdT9DrrXluxqPazzKH+mO8I82t/T3sK/qn2XvW/pHm2fc+9X8j6x1dP/otY7sz7BW63laj83gX3H/Z/O3ivzjU8W/d9Zod/nzZER/pg5G9Wfp4ehM2f2Re8hjX3j59/w3cOt3BLYOLI6Xyb/1d5/e3qyvSa9r3Pv+g/C33vuW62X1v87bQf7/2cO/9Vzy9+tg7dys/si1t9ij/b0jf/nLn8Pf4vkwW+Qv/z3+VTpg8e+1r9JBdv/sPTD4H7XP3EWkv7V7xi68/T3MM3XR67/n+59Ic/Y+EP7RropSJU9ReuarAFEAAA==
+  </data>
+ </layer>
+</map>
