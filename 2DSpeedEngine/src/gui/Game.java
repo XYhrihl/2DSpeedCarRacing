@@ -46,8 +46,10 @@ public class Game extends BasicGameState
 	private ArrayList<SpeedMap> allMaps;
 	private SpeedMap map;
 	private boolean pause, finished, collided, spacedown;
+	private boolean exitHover, menuHover, restartHover;
 	private ArrayList<HighScore> highscore;
 	private String name;
+	private String buttonClicked = "none";
 	private boolean tutorialhint = false;
 	private boolean exclamationFlag = true;
 	private int tutorialState = 0;
@@ -59,6 +61,10 @@ public class Game extends BasicGameState
 	private TrueTypeFont ttfMediumFont;
 	private Font textFont;
 	private TrueTypeFont ttfTextFont;
+	private Font bigFont;
+	private TrueTypeFont ttfBigFont;
+	
+	private Image bluerr;
 	
 	private Image crashed40;
 	private Image crashed44;
@@ -89,6 +95,9 @@ public class Game extends BasicGameState
 		finished = false;
 		collided = false;
 		spacedown = false;
+		exitHover = false;
+		menuHover = false;
+		restartHover = false;
 		difficulty = Run.DIF_NORMAL;
 		
 		mediumFont = new Font(Font.MONOSPACED, Font.BOLD, 32);
@@ -96,6 +105,11 @@ public class Game extends BasicGameState
 		
 		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
 		ttfTextFont = new TrueTypeFont(textFont, true);
+		
+		bigFont = new Font(Font.MONOSPACED, Font.BOLD, 60);
+		ttfBigFont = new TrueTypeFont(bigFont, true);
+		
+		bluerr = new Image("res/pic/roundrectblue_t140.png");
 		
 		crashed40 = new Image("res/animation/crashed_40.png");
 		crashed44 = new Image("res/animation/crashed_44.png");
@@ -161,6 +175,17 @@ public class Game extends BasicGameState
 	{
 		readXMLValues("save/values.xml");
 		
+		pause = false;
+		finished = false;
+		collided = false;
+		spacedown = false;
+		exitHover = false;
+		menuHover = false;
+		restartHover = false;
+		tutorialState = 0;
+		animationState = 0;
+		exclamationCounter = 0;
+		
 		if (map.getMapName().equals("Tutorial Map"))
 			tutorialhint = true;
 		else
@@ -213,29 +238,68 @@ public class Game extends BasicGameState
 		g.setColor(Color.white);
 		g.drawString(""+player.getRunTimeMillis(), Run.screenWidth/2-40, 20);
 		
-		if (pause || finished || collided)
+		if (((finished || collided) && (exclamationCounter > 1)) || pause)
 		{
-			// TODO draw new Buttons here
+			if (restartHover)
+				g.setColor(Color.lightGray);
+			else
+				g.setColor(Color.white);
+			g.fillRoundRect(Run.screenWidth/10, Run.screenHeight/5*3, Run.screenWidth/5, Run.screenHeight/8, 25);
+			
+			if (menuHover)
+				g.setColor(Color.lightGray);
+			else
+				g.setColor(Color.white);
+			g.fillRoundRect(Run.screenWidth/10*4, Run.screenHeight/5*3, Run.screenWidth/5, Run.screenHeight/8, 25);
+			
+			if (exitHover)
+				g.setColor(Color.lightGray);
+			else
+				g.setColor(Color.white);
+			g.fillRoundRect(Run.screenWidth/10*7, Run.screenHeight/5*3, Run.screenWidth/5, Run.screenHeight/8, 25);
+			
+			g.setColor(Run.hoverColor);
+			g.fillRoundRect(Run.screenWidth/10+12, Run.screenHeight/5*3+12, Run.screenWidth/5-24, Run.screenHeight/8-24, 22);
 			g.setColor(Run.backgroundColor);
-			g.fillRect(Run.screenWidth/4, Run.screenHeight/4, Run.screenWidth/2, Run.screenHeight/2);
+			g.fillRoundRect(Run.screenWidth/10*4+12, Run.screenHeight/5*3+12, Run.screenWidth/5-24, Run.screenHeight/8-24, 22);
+			g.setColor(Run.darkred);
+			g.fillRoundRect(Run.screenWidth/10*7+12, Run.screenHeight/5*3+12, Run.screenWidth/5-24, Run.screenHeight/8-24, 22);
+			
+			g.setFont(ttfMediumFont);
 			g.setColor(Color.white);
-			g.fillRect(Run.screenWidth/4+Run.screenWidth/32, Run.screenHeight/4+Run.screenHeight/32, Run.screenWidth/2-Run.screenWidth/16, Run.screenHeight/4-Run.screenHeight/16);
-			g.setColor(Color.red);
-			g.fillRect(Run.screenWidth/4+Run.screenWidth/32, Run.screenHeight/2+Run.screenHeight/32, Run.screenWidth/2-Run.screenWidth/16, Run.screenHeight/4-Run.screenHeight/16);
+			
+			if (pause)
+				g.drawString("Weiter", Run.screenWidth/10+130, Run.screenHeight/5*3+40);
+			else
+				g.drawString("Neustart", Run.screenWidth/10+110, Run.screenHeight/5*3+40);
+			
+			g.drawString("Hauptmenü", Run.screenWidth/10*4+105, Run.screenHeight/5*3+40);
+			g.drawString("Beenden", Run.screenWidth/10*7+130, Run.screenHeight/5*3+40);
+		}
+		
+		if (animationState != 0 || pause)
+		{
+			g.drawImage(bluerr, Run.screenWidth/2-227, Run.screenHeight/3-28);
+			if (pause)
+			{
+				g.setColor(Color.yellow);
+				g.setFont(ttfBigFont);
+				g.drawString("PAUSE", Run.screenWidth/2-90, Run.screenHeight/3);
+			}
 		}
 		
 		if (animationState == -1)
 		{
-			g.drawAnimation(crashedAni, Run.screenWidth/2-138, Run.screenHeight/3);
+			g.drawAnimation(crashedAni, Run.screenWidth/2-178, Run.screenHeight/3);
 		}
 		else if (animationState == -2)
 		{
-			g.drawImage(crashed40, Run.screenWidth/2-138, Run.screenHeight/3);
+			g.drawImage(crashed40, Run.screenWidth/2-178, Run.screenHeight/3);
 			exclamationFlag = true;
 		}
 		else if (animationState == -3)
 		{
-			g.drawAnimation(crashedAniExclamation, Run.screenWidth/2-150, Run.screenHeight/3);
+			g.drawAnimation(crashedAniExclamation, Run.screenWidth/2-190, Run.screenHeight/3);
 			if (exclamationFlag)
 			{
 				exclamationCounter ++;
@@ -244,22 +308,21 @@ public class Game extends BasicGameState
 		}
 		else if (animationState == -4)
 		{
-			g.drawImage(crashed44, Run.screenWidth/2-150, Run.screenHeight/3);
-			// TODO draw new Buttons
+			g.drawImage(crashed44, Run.screenWidth/2-190, Run.screenHeight/3);
 		}
 		
 		if (animationState == 1)
 		{
-			g.drawAnimation(finishedAni, Run.screenWidth/2-138, Run.screenHeight/3);
+			g.drawAnimation(finishedAni, Run.screenWidth/2-178, Run.screenHeight/3);
 		}
 		else if (animationState == 2)
 		{
-			g.drawImage(finished40, Run.screenWidth/2-138, Run.screenHeight/3);
+			g.drawImage(finished40, Run.screenWidth/2-178, Run.screenHeight/3);
 			exclamationFlag = true;
 		}
 		else if (animationState == 3)
 		{
-			g.drawAnimation(finishedAniExclamation, Run.screenWidth/2-150, Run.screenHeight/3);
+			g.drawAnimation(finishedAniExclamation, Run.screenWidth/2-190, Run.screenHeight/3);
 			if (exclamationFlag)
 			{
 				exclamationCounter ++;
@@ -268,19 +331,18 @@ public class Game extends BasicGameState
 		}
 		else if (animationState == 4)
 		{
-			g.drawImage(finished44, Run.screenWidth/2-150, Run.screenHeight/3);
+			g.drawImage(finished44, Run.screenWidth/2-190, Run.screenHeight/3);
 			g.setColor(Run.finishColor);
 			g.setFont(ttfMediumFont);
-			g.drawString("Zeit: " + player.getRunTimeMillis() + " ms", Run.screenWidth/2-100, Run.screenHeight/3+60);
-			// TODO draw new Buttons
+			g.drawString("Zeit: " + player.getRunTimeMillis() + " ms", Run.screenWidth/2-120, Run.screenHeight/3+60);
 		}
 		
 		for(int i = 0; i<exclamationCounter; i++)
 		{
 			if (animationState<0)
-				g.drawImage(exclamationRed, Run.screenWidth/2+182+i*20, Run.screenHeight/3);
+				g.drawImage(exclamationRed, Run.screenWidth/2+142+i*20, Run.screenHeight/3);
 			else
-				g.drawImage(exclamationGreen, Run.screenWidth/2+182+i*20, Run.screenHeight/3);
+				g.drawImage(exclamationGreen, Run.screenWidth/2+142+i*20, Run.screenHeight/3);
 		}
 	}
 
@@ -288,6 +350,28 @@ public class Game extends BasicGameState
 	{
 		mPosX = Mouse.getX();
 		mPosY = Mouse.getY();
+		
+		if (buttonClicked.equals("mainMenu"))
+		{
+			buttonClicked = "none";
+			sbg.enterState(Run.menuIndex);
+		}
+		
+		// hovereffects
+		if ((mPosX > Run.screenWidth/10) && (mPosX < Run.screenWidth/10*3) && (mPosY < Run.screenHeight-Run.screenHeight/5*3) && (mPosY > Run.screenHeight-Run.screenHeight/5*3-Run.screenHeight/8))
+			restartHover = true;
+		else
+			restartHover = false;
+		
+		if ((mPosX > Run.screenWidth/10*4) && (mPosX < Run.screenWidth/10*6) && (mPosY < Run.screenHeight-Run.screenHeight/5*3) && (mPosY > Run.screenHeight-Run.screenHeight/5*3-Run.screenHeight/8))
+			menuHover = true;
+		else
+			menuHover = false;
+		
+		if ((mPosX > Run.screenWidth/10*7) && (mPosX < Run.screenWidth/10*9) && (mPosY < Run.screenHeight-Run.screenHeight/5*3) && (mPosY > Run.screenHeight-Run.screenHeight/5*3-Run.screenHeight/8))
+			exitHover = true;
+		else
+			exitHover = false;
 		
 		// for inputhandling in checkForFinish():
 		input = gc.getInput();
@@ -364,7 +448,7 @@ public class Game extends BasicGameState
 			}
 		}
 		
-		if (input.isKeyDown(Input.KEY_SPACE) && !spacedown)
+		if (input.isKeyDown(Input.KEY_SPACE) && !spacedown && player.getMaparea()!="pause")
 		{
 			spacedown = true;
 		}
@@ -401,10 +485,18 @@ public class Game extends BasicGameState
 		// Trigger pause and finish from this method
 		
 		// pause menu via escape key
-		if (input.isKeyPressed(Input.KEY_ESCAPE))
+		if (input.isKeyPressed(Input.KEY_ESCAPE) && !finished && !collided)
 		{
-			player.pauseGame();
-			pause = true;
+			if (!pause)
+			{
+				player.pauseGame();
+				pause = true;
+			}
+			else
+			{
+				player.continueGame();
+				pause = false;
+			}
 		}
 		
 		if (player.getAndUpdateMaparea(map) == "finish")
@@ -570,24 +662,19 @@ public class Game extends BasicGameState
 	//overwrite mouseReleased method for button click handling
 	public void mouseReleased(int button, int x, int y)
 	{
-		if (pause || finished || collided)
+		if ((finished || collided) && (exclamationCounter > 1))
 		{
-			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/4+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/2-Run.screenHeight/32))
+			if ((x > Run.screenWidth/10*7) && (x < Run.screenWidth/10*9) && (y > Run.screenHeight/5*3) && (y < Run.screenHeight/5*3+Run.screenHeight/8))
 			{
 				System.exit(0);
 			}
-		}
-		if (pause)
-		{
-			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/2+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/4*3-Run.screenHeight/32))
+			
+			if ((x > Run.screenWidth/10*4) && (x < Run.screenWidth/10*6) && (y > Run.screenHeight/5*3) && (y < Run.screenHeight/5*3+Run.screenHeight/8))
 			{
-				player.continueGame();
-				pause = false;
+				buttonClicked = "mainMenu";
 			}
-		}
-		if (finished || collided)
-		{
-			if ((mPosX > Run.screenWidth/4+Run.screenWidth/32) && (mPosY > Run.screenHeight/2+Run.screenHeight/32) && (mPosX < Run.screenWidth/4*3-Run.screenWidth/32) && (mPosY < Run.screenHeight/4*3-Run.screenHeight/32))
+			
+			if ((x > Run.screenWidth/10) && (x < Run.screenWidth/10*3) && (y > Run.screenHeight/5*3) && (y < Run.screenHeight/5*3+Run.screenHeight/8))
 			{
 				player.restartGame(map);
 				finished = false;
@@ -595,6 +682,24 @@ public class Game extends BasicGameState
 				tutorialState = 0;
 				animationState = 0;
 				exclamationCounter = 0;
+			}
+		}
+		if (pause)
+		{
+			if ((x > Run.screenWidth/10*7) && (x < Run.screenWidth/10*9) && (y > Run.screenHeight/5*3) && (y < Run.screenHeight/5*3+Run.screenHeight/8))
+			{
+				System.exit(0);
+			}
+			
+			if ((x > Run.screenWidth/10*4) && (x < Run.screenWidth/10*6) && (y > Run.screenHeight/5*3) && (y < Run.screenHeight/5*3+Run.screenHeight/8))
+			{
+				buttonClicked = "mainMenu";
+			}
+			
+			if ((x > Run.screenWidth/10) && (x < Run.screenWidth/10*3) && (y > Run.screenHeight/5*3) && (y < Run.screenHeight/5*3+Run.screenHeight/8))
+			{
+				player.continueGame();
+				pause = false;
 			}
 		}
 	}
