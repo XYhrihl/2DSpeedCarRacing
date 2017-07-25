@@ -213,19 +213,19 @@ public class Game extends BasicGameState
 		{
 			g.setColor(Color.blue);
 			g.setFont(ttfTextFont);
-			g.drawString("Lehrtaste --> Restart", 450, 520);
+			g.drawString("Leertaste --> Neustart", 430, 520);
 			g.setFont(ttfMediumFont);
 			if (tutorialState == 0)
-				g.drawString("Klicke um zu Beschleunigen!", 80, 480);
+				g.drawString("Klicke um zu beschleunigen!", 80, 480);
 			if (tutorialState == 1)
-				g.drawString("Klicke hinter dich um zu Bremsen!", 80, 200);
+				g.drawString("Klicke hinter dich um zu bremsen!", 80, 200);
 			if (tutorialState == 2)
 				g.drawString("Klicke seitlich um zu lenken!", 200, 450);
 			if (tutorialState == 3)
 			{	
 				g.drawString("Folge dem Kurs und", 300, 200);
-				g.drawString("erriech die Grüne", 300, 250);
-				g.drawString("fläche schenllstmöglich", 300, 300);
+				g.drawString("erreich die grüne", 300, 250);
+				g.drawString("Fläche schnellstmöglich", 300, 300);
 			}
 		}
 		
