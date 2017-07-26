@@ -46,8 +46,8 @@ public class Run extends StateBasedGame
 			appgc = new AppGameContainer(new Run(gamename));
 			screenWidth = appgc.getScreenWidth();
 			screenHeight = appgc.getScreenHeight();
-			//appgc.setShowFPS(false);
-			appgc.setTargetFrameRate(200);
+			appgc.setShowFPS(false);
+			appgc.setTargetFrameRate(205);
 			appgc.setDisplayMode(screenWidth, screenHeight, false);
 			appgc.setFullscreen(true); // need exit button in all states for true
 			appgc.start();

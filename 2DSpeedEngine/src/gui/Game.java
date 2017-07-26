@@ -233,7 +233,10 @@ public class Game extends BasicGameState
 		g.setFont(ttfTextFont);
 		
 		player.renderObj(g);
-		g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
+		if (difficulty != Run.DIF_SCHWER)
+		{
+			g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
+		}
 		
 		g.setColor(Color.white);
 		g.drawString(""+player.getRunTimeMillis(), Run.screenWidth/2-40, 20);
