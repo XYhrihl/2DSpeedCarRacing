@@ -8,6 +8,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Run extends StateBasedGame
 {
+	// TODO TOADD: bereiche die den Spieler beschleunigen/verlangsamen...
+	
 	public static final int DIF_EINFACH = 0;
 	public static final int DIF_NORMAL = 1;
 	public static final int DIF_SCHWER = 2;
