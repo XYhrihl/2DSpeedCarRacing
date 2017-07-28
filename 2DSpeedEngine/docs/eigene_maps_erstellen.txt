@@ -1,0 +1,40 @@
+Um eine Eigene Map zu erstellen wird der Tiled-Editor benötigt. (http://www.mapeditor.org/)
+Dies ist ein Kostenloser Mapeditor mit dem Karten aus sogenannten Tiles (Teilen) erstellt werden können.
+
+Vorgehensweise beim Erstellen einer Eigenen Map:
+	- Zuerst erstellen wir eine neue Map über Datei -> Neu -> Neue Karte
+	- in dem Fenster wählen wir bei Orientierung "Orthogonal", bei Kachelebenenformat "CSV" und bei Kachel-Zeichenreihenfolge "Rechts Runter" aus.
+	- und legen die Größe der Karte fest indem wir:
+		- die Anzahl der Kacheln festlegen
+		- die Größe einer Kachel festlegen
+		--> Anzahl * Größe ergibt die Gesamtgröße der Karte
+	- jetzt klicken wir auf "Speichern unter" und geben einen Namen und einen Speicherort ein.
+	- danach wählen wir in der oberen Menüleiste Karte -> Karteneigenschaften aus.
+	- nun werden die Eigenschaften der Karte angezeigt. Diese müssen etwas angepasst werden:
+		- Kachelebenenformat muss von CSV in Base64 (gzip-komprimiert) geändert werden
+		- wir müssen eine neue Eigenschaft hinzufügen indem wir auf das "+" am unteren Fensterrand klicken 
+		- diese Eigenschaft soll vom Typ "string" sein und den Namen "Kartenname" haben
+		- der Wert dieser Eigenschaft ist der Name der Karte
+		- dieser Kartenname sollte eindeutig sein und wird später im Hauptmenü des Spiels angezeigt
+	- sollte die Tilesetansicht auf der rechten Seite noch nicht aktiviert sein, so müssen wir das in der oberen Menüleiste unter Ansicht -> Ansichten und Toolbars -> Tilesets machen 
+	- in der Tilesetansicht klicken wir auf die Schaltfläche für ein neues Tileset am unteren Ende des Tilesets-Fensters
+	- nun geben wir dem Tileset einen Namen, wählen beim Typ "Basierend auf Tileset" und setzten den Haken bei "In Karte einbetten"
+	- bei Quelle tragen wir den Dateipfad zu unserer Quell-png-Datei ein 
+	- jetzt prüfen wir, dass die Kachelbreite mit der der Map übereinstimmt und klicken zum Abschließen auf "OK"
+	- um am Ende eine funktionierende Karte zu haben müssen wir nun den Tiles noch Eigenschaften geben
+		- dazu klicken wir auf die Schaltfläche "Tileset bearbeiten" am unteren Ende des Tilesets-Fensters
+		- nun können wir die einzelnen Tiles auswählen und wie bei der Karte über das "+" links unten Eigenschaften hinzufügen
+		- alle Eigenschaften müssen vom Typ "string" sein
+		- alle Tiles, die verwendet werden müssen die Eigenschaft "collision" haben
+			- true für Wände und Hindernisse
+			- false für befahrbare Flächen (auch Start- und Zielbereiche)
+		- ein Bereich sollte die Eigenschaft "startarea" mit dem Wert "true" haben. Sobald dieser verlassen wird fängt die Zeit an zu zählen
+		- ein Tile braucht zusätzlich zur startarea die Eigenschaft "startposition" mit dem Wert "start". Dies wird die Position an der der Spieler anfängt
+		- ein weiterer Bereich sollte die Eigenschaft "zielarea" mit dem Wert "true" haben. Sobald der Spieler diesen erreicht hat bleibt die Zeit stehen
+	- jetzt können wir mit den Tiles denen wir gerade die Eigenschaften gegeben haben unsere Map "mahlen"
+	- sobald die Map fertig gemalt ist muss sie als .tmx Datei abgespeichert werden
+	- diese "_MEINEMAP_.tmx" Datei müssen wir nun noch mit einem Texteditor (z.B. Notepad++) öffnen
+		- der "image" tag muss folgendermaßen aussehen: <image source="../Tiled-Resources/_MEINBILD_.png" width="_xxx_" height="_xxx_"/>
+		- sollte ein <objectgroup> tag vorhanden sein, so müssen wir diesem die Attribute 'width="1"' und 'height="1"' hinzufügen
+	- Jetzt sind wir fertig und müssen die _MEINEMAP_.tmx Datei in den Ordner "res/maps/" und die _MEINBILD_.png Datei in den Ordner "res/Tiled-Resources/" verschieben.
+	

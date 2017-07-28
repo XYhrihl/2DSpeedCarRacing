@@ -2,22 +2,20 @@ package game;
 
 import java.util.ArrayList;
 
-import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Transform;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import gui.Run;
 
 public class SpeedObj 
 {
-	// TODO balance acceleration-rate here
+	// balance acceleration-rate here
 	public static final int DIF_EINFACH_FACTOR = 400000;
-	public static final int DIF_NORMAL_FACTOR = 100000;
-	public static final int DIF_SCHWER_FACTOR = 50000;
+	public static final int DIF_NORMAL_FACTOR =  150000;
+	public static final int DIF_SCHWER_FACTOR =  100000;
 	
-	private Shape hitbox;
 	private SpeedMap map;
+	private Image car;
 	
 	private float xMomentum, yMomentum;
 	private float xPos, yPos;
@@ -40,8 +38,6 @@ public class SpeedObj
 	private float[] cornerX = new float[6];
 	private float[] cornerY = new float[6];
 	
-	private float lastTransformRad = 0;
-	
 	public SpeedObj(SpeedMap map)
 	{
 		this.map = map;
@@ -53,28 +49,32 @@ public class SpeedObj
 		accelFactor = DIF_NORMAL_FACTOR;
 		maparea = "start";
 		
-		hitbox = new Rectangle(xPos-sizeX, yPos-sizeY, 2*sizeX, 2*sizeY);
-		calculateHitboxCorner(getAngleRAD());
+		try 
+		{
+			car = new Image("res/pic/speedcar.png");
+		} 
+		catch (SlickException e) 
+		{
+			System.out.println("[ERROR]: Failed to load car image!");
+			e.printStackTrace();
+		}
+		calculateHitboxCorner(getAngleDEG());
 		
 		setMyMomentum(0,0);
 	}
 
 	public void renderObj (Graphics g)
 	{
-		g.fill(hitbox);
+		g.drawImage(car, xPos-sizeX, yPos-sizeY);
 	}
 	
 	public void updatePosition(int delta)
 	{
-		float angle = getAngleRAD();
+		float angle = getAngleDEG();
 		xPos = xPos + (xMomentum*delta/5);
 		yPos = yPos + (yMomentum*delta/5);
-		hitbox.setCenterX(xPos);
-		hitbox.setCenterY(yPos);
-		hitbox = hitbox.transform(Transform.createRotateTransform(-lastTransformRad, hitbox.getCenterX(), hitbox.getCenterY()));
-		hitbox = hitbox.transform(Transform.createRotateTransform(angle, hitbox.getCenterX(), hitbox.getCenterY()));
-		calculateHitboxCorner(angle);
-		lastTransformRad = angle;
+		car.setRotation(angle);
+		calculateHitboxCorner((float)Math.toRadians(angle));
 		
 		String windowExit = checkForWindowExit();
 		if (windowExit!="none")
@@ -121,19 +121,20 @@ public class SpeedObj
 		}
 	}
 	
-	public float getAngleRAD()
+	public float getAngleDEG()
 	{
 		// alpha = arcsin(y/sqrt(x²+y²))
-		float xDir = xPos - Mouse.getX();
-		float yDir = Run.screenHeight-yPos - Mouse.getY();
+		float xDir = xMomentum;
+		float yDir = yMomentum;
 		float angle = (float)Math.asin(yDir/Math.sqrt(xDir*xDir+yDir*yDir));
+		angle = (float) Math.toDegrees(angle);
 		if (Float.isNaN(angle))
 		{
 			angle = 0;
 		}
-		if (xDir > 0)
+		if (xDir < 0)
 		{
-			angle = -angle;
+			angle = 180-angle;
 		}
 		return angle; 
 	}
@@ -252,7 +253,7 @@ public class SpeedObj
 		xPos = xTile*map.getTileWidth()+sizeX;
 		yPos = yTile*map.getTileHeight()+sizeY;
 		maparea = "start";
-		calculateHitboxCorner(getAngleRAD());
+		calculateHitboxCorner(getAngleDEG());
 		setMyMomentum(0,0);
 	}
 	

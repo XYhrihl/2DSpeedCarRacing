@@ -8,6 +8,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Run extends StateBasedGame
 {
+	// TODO TOADD: bereiche die den Spieler beschleunigen/verlangsamen...
+	
 	public static final int DIF_EINFACH = 0;
 	public static final int DIF_NORMAL = 1;
 	public static final int DIF_SCHWER = 2;
@@ -46,8 +48,8 @@ public class Run extends StateBasedGame
 			appgc = new AppGameContainer(new Run(gamename));
 			screenWidth = appgc.getScreenWidth();
 			screenHeight = appgc.getScreenHeight();
-			//appgc.setShowFPS(false);
-			appgc.setTargetFrameRate(200);
+			appgc.setShowFPS(false);
+			appgc.setTargetFrameRate(205);
 			appgc.setDisplayMode(screenWidth, screenHeight, false);
 			appgc.setFullscreen(true); // need exit button in all states for true
 			appgc.start();
