@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="85" height="48" tilewidth="16" tileheight="16" nextobjectid="1">
+ <properties>
+  <property name="Kartenname" value="Super Mario"/>
+ </properties>
+ <tileset firstgid="1" name="tileset_gutter" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="924" columns="33">
+  <image source="../Tiled-Resources/tileset_gutter.png" width="594" height="504"/>
+  <tile id="0">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="33">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="44">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="collision" value="false"/>
+    <property name="zielarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="57">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="200">
+   <properties>
+    <property name="startarea" value="true"/>
+   </properties>
+  </tile>
+  <tile id="201">
+   <properties>
+    <property name="startarea" value="true"/>
+    <property name="startposition" value="start"/>
+   </properties>
+  </tile>
+  <tile id="264">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="265">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="266">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="267">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="268">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="297">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="298">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="299">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="300">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="301">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="660">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="661">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="662">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="665">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="666">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="667">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="668">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="669">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="670">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="693">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="694">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="695">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="696">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="698">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="699">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="700">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+  <tile id="701">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="702">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+  <tile id="703">
+   <properties>
+    <property name="collision" value="false"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="85" height="48">
+  <properties>
+   <property name="collision" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2bS07EMAyGM48NCIY12y5BA3vuCpyDI8Cp6EhE9USJYydO7NIsfvU1k7pf/jzaukfn3HFIXF97ee0i5VL3aevNLUvHjK8H00tcPkZsXys9umu1ro8Y0zu3SJsp/B3XY1qKMb2ft0+zHpSZQjaTW9SS6eHPy7FlCVPvzTMQ5lfY52j6AmN6cHH18unJLXpx19s5L2hwnQzV5fusj1mfEaavLr7UjnkNXL080/0QWzmm2nVrTVMFk8EUZ0qdz6b6Uy35eZWl+cO0cZ+2qI8tM4UsJblemEL1Ypq6Hu61wb6oZr8019K4LTAtOV/Nb1rLQtunjlGSTFuyt8CUw16zPKzPKWU6Bf01dX3KlE+NtZYpbA8t529Upp5Njo/U/3qoVfunMIVcapha4krhSW0/FKZ7A88n1izPtLROuLo808feleSOr0G9x33PC3uHskWmNeMlxm2rTGvvlyAvyvoaxelPYwy57xelmVp7RgiZUmKXOF/IKzYm5d73a7GmlqnF1JcHc0Nq81KozwNKr8UqU6w8yjluZuC3O3nWLZiWzk9jORstmT7NPJ8TTLm8Ne9NLQljmjpW4u3BFD8mxZqaF1jLNMyZaj2vkWSKlVXDYuSh5BUyo/r0mylr8+xQqXy+WG5f6XgpzVS6vdReB5drjl+4j5Jn6Y9pM/Xxt/I9Jff0v/m0h3Iek2AKy94C095KMf0ZTEmKeV/Cp75d+ftT6joWZ+o7hdLvFiz4dLR9vj+3xFTiexPOmGWBqfZcSsqfVphamPNLa9ybyvkzZDokq18IJ172wD8AAA==
+  </data>
+ </layer>
+</map>
