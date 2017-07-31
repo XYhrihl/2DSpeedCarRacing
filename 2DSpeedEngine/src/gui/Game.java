@@ -56,6 +56,8 @@ public class Game extends BasicGameState
 	private int animationState = 0;
 	private long animationStamp;
 	private int exclamationCounter = 0;
+	float scaleX;
+	float scaleY;
 	
 	private Font mediumFont;
 	private TrueTypeFont ttfMediumFont;
@@ -169,11 +171,17 @@ public class Game extends BasicGameState
 		readXMLsaves("save/highscore.xml");
 		allMaps = new ArrayList<SpeedMap>();
 		loadMaps();
+		
+		scaleX = (float) Run.screenWidth / (float) (map.getWidth()*map.getTileWidth());
+		scaleY = (float) Run.screenHeight / (float) (map.getHeight()*map.getTileHeight());
 	}
 
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
 		readXMLValues("save/values.xml");
+		
+		scaleX = (float) Run.screenWidth / (float) (map.getWidth()*map.getTileWidth());
+		scaleY = (float) Run.screenHeight / (float) (map.getHeight()*map.getTileHeight());
 		
 		pause = false;
 		finished = false;
@@ -207,6 +215,8 @@ public class Game extends BasicGameState
 	
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
 	{
+		g.scale(scaleX, scaleY);
+		g.setBackground(Color.lightGray);
 		map.render(0, 0);
 		
 		if (tutorialhint)
@@ -235,8 +245,9 @@ public class Game extends BasicGameState
 		player.renderObj(g);
 		if (difficulty != Run.DIF_SCHWER)
 		{
-			g.drawLine(player.getxPos(), player.getyPos(), mPosX, Run.screenHeight-mPosY);
+			g.drawLine(player.getxPos(), player.getyPos(), mPosX/scaleX, (Run.screenHeight-mPosY)/scaleY);
 		}
+		g.scale(1/scaleX, 1/scaleY);
 		
 		g.setColor(Color.white);
 		g.drawString(""+player.getRunTimeMillis(), Run.screenWidth/2-40, 20);
@@ -394,7 +405,7 @@ public class Game extends BasicGameState
 		
 		if (input.isMouseButtonDown(0))
 		{
-			player.accelerateToPosition(mPosX, Run.screenHeight-mPosY, delta);
+			player.accelerateToPosition(mPosX/scaleX, (Run.screenHeight-mPosY)/scaleY, delta);
 		}
 		
 		player.updatePosition(delta);

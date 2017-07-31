@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import gui.Run;
 
 public class SpeedObj 
 {
@@ -76,12 +75,6 @@ public class SpeedObj
 		car.setRotation(angle);
 		calculateHitboxCorner((float)Math.toRadians(angle));
 		
-		String windowExit = checkForWindowExit();
-		if (windowExit!="none")
-		{
-			calcNewMomentum(windowExit);
-		}
-		
 		if (maparea == "run")
 		{
 			runtime = runtime + delta;
@@ -112,12 +105,12 @@ public class SpeedObj
 		return new int[]{xTile, yTile};
 	}
 	
-	public void accelerateToPosition (int x, int y, int delta)
+	public void accelerateToPosition (float x, float y, int delta)
 	{
 		if (maparea != "pause" && maparea != "collided")
 		{
-			xMomentum = xMomentum + (x-this.getxPos())*delta/accelFactor;
-			yMomentum = yMomentum + (y-this.getyPos())*delta/accelFactor;
+			xMomentum = xMomentum + (x-this.getxPos()) * delta/accelFactor;
+			yMomentum = yMomentum + (y-this.getyPos()) * delta/accelFactor;
 		}
 	}
 	
@@ -137,42 +130,6 @@ public class SpeedObj
 			angle = 180-angle;
 		}
 		return angle; 
-	}
-	
-	public void calcNewMomentum(String side)
-	{
-		if (side=="right" || side=="left")
-		{
-			xMomentum = -xMomentum;
-		}
-		if (side=="top" || side=="bot")
-		{
-			yMomentum = -yMomentum;
-		}
-	}
-	
-	public String checkForWindowExit()
-	{
-		if (xPos-sizeX < 0)
-		{
-			return "left";
-		}
-		else if (xPos+sizeX > Run.screenWidth)
-		{
-			return "right";
-		}	
-		else if (yPos-sizeY < 0)
-		{
-			return "bot";
-		}
-		else if (yPos+sizeY > Run.screenHeight)
-		{
-			return "top";
-		}
-		else
-		{
-			return "none";
-		}
 	}
 	
 	public boolean checkCollisionstate()
