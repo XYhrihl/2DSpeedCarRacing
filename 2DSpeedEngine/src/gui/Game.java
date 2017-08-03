@@ -56,8 +56,8 @@ public class Game extends BasicGameState
 	private int animationState = 0;
 	private long animationStamp;
 	private int exclamationCounter = 0;
-	float scaleX;
-	float scaleY;
+	private float scaleX;
+	private float scaleY;
 	
 	private Font mediumFont;
 	private TrueTypeFont ttfMediumFont;
@@ -167,6 +167,7 @@ public class Game extends BasicGameState
 		
 		map = new SpeedMap("res/maps/basic_speedmap.tmx");
 		player = new SpeedObj(map);
+		player.setDifficulty(difficulty);
 		highscore = new ArrayList<HighScore>();
 		readXMLsaves("save/highscore.xml");
 		allMaps = new ArrayList<SpeedMap>();
@@ -200,6 +201,7 @@ public class Game extends BasicGameState
 			tutorialhint = false;
 		
 		player = new SpeedObj(map);
+		player.setDifficulty(difficulty);
 		
 		if (tutorialhint)
 			player.setAccelFactor(SpeedObj.DIF_EINFACH_FACTOR);
@@ -243,10 +245,6 @@ public class Game extends BasicGameState
 		g.setFont(ttfTextFont);
 		
 		player.renderObj(g);
-		if (difficulty != Run.DIF_SCHWER)
-		{
-			g.drawLine(player.getxPos(), player.getyPos(), mPosX/scaleX, (Run.screenHeight-mPosY)/scaleY);
-		}
 		g.scale(1/scaleX, 1/scaleY);
 		
 		g.setColor(Color.white);
