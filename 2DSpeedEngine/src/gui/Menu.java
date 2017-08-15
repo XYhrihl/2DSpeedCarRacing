@@ -51,7 +51,6 @@ public class Menu extends BasicGameState
 	private boolean includeAllDiffs = false;
 	private boolean hoverPlay = false;
 	private boolean hoverExit = false;
-	private boolean mapToBig = false;
 	private int diffhover = -1;
 	private int maphover = -1;
 	private int arrowhover = -1;
@@ -71,7 +70,10 @@ public class Menu extends BasicGameState
 	private TrueTypeFont ttfMediumFont;
 	private Font textFont;
 	private TrueTypeFont ttfTextFont;
+	private Font smallFont;
+	private TrueTypeFont ttfSmallFont;
 	private TextField txtField;
+	
 	
 	public Menu(int index)
 	{
@@ -95,6 +97,9 @@ public class Menu extends BasicGameState
 		
 		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
 		ttfTextFont = new TrueTypeFont(textFont, true);
+		
+		smallFont = new Font(Font.MONOSPACED, Font.BOLD, 14);
+		ttfSmallFont = new TrueTypeFont(smallFont, true);
 		txtField = new TextField(gc, ttfTextFont, Run.screenWidth/4*3+15, Run.screenHeight/8, Run.screenWidth/4-50, 36);
 		
 		allMaps = new ArrayList<SpeedMap>();
@@ -118,7 +123,6 @@ public class Menu extends BasicGameState
 	
 	public void enter(GameContainer gc, StateBasedGame sbg)
 	{
-		mapToBig = false;
 		showHighScores.clear();
 		highscore.clear();
 		readXMLsaves("save/highscore.xml");
@@ -127,6 +131,14 @@ public class Menu extends BasicGameState
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException
 	{
 		g.setBackground(Run.backgroundColor);
+		
+		if(Run.screenWidth != 1920 || Run.screenHeight != 1080)
+		{
+			g.setFont(ttfSmallFont);
+			g.setColor(Color.orange);
+			g.drawString("Dieses Menü wurde für einen FullHD Bildschirm (1080p) entwickelt und könnte in anderen Auflösungen verzerrt sein.", 100, 2);
+			g.drawString("Dies beeinträchtigt jedoch nur das Aussehen und nicht die Funktionalität des Menüs", 100, 16);
+		}
 		
 		g.setFont(ttfButtonFont);
 		
@@ -141,15 +153,6 @@ public class Menu extends BasicGameState
 		g.fillRoundRect(Run.screenWidth/4*3+15, Run.screenHeight/8*2+15, Run.screenWidth/4-50, Run.screenHeight/4-30, 30);
 		g.setColor(Color.white);
 		g.drawString("SPIELEN", Run.screenWidth/4*3+110, Run.screenHeight/8*3-42);
-		
-		// massage if map is too big
-		if (mapToBig)
-		{
-			g.setColor(Color.red);
-			g.setFont(ttfMediumFont);
-			g.drawString("Die Karte ist zu Groß!", Run.screenWidth/4*3, Run.screenHeight/4-70);
-			g.setFont(ttfButtonFont);
-		}
 		
 		// exit button
 		g.setColor(Color.red);
@@ -228,7 +231,7 @@ public class Menu extends BasicGameState
 		g.setFont(ttfMediumFont);
 		g.drawString("Mapauswahl:", Run.screenWidth/3+24, y_mapNullpoint-42);
 		g.setFont(ttfTextFont);
-		g.drawString("Auflösung", Run.screenWidth/9*5+60, y_mapNullpoint-34);
+		g.drawString("Auflösung", Run.screenWidth/3*2-158, y_mapNullpoint-34);
 				
 		// the actual maps
 		for (SpeedMap m: allMaps)
@@ -246,7 +249,7 @@ public class Menu extends BasicGameState
 				g.setColor(Run.backgroundColor);
 			}
 			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*28);
-			g.drawString(m.getResolution(), Run.screenWidth/9*5+60, y_mapNullpoint+allMaps.indexOf(m)*28);
+			g.drawString(m.getResolution(), Run.screenWidth/3*2-160, y_mapNullpoint+allMaps.indexOf(m)*28);
 		}
 		// the map arrows
 		g.setColor(Color.white);
@@ -335,16 +338,8 @@ public class Menu extends BasicGameState
 		if (buttonClicked == "play")
 		{
 			buttonClicked = "none";
-			if ((activeMap.getWidth()*activeMap.getTileWidth()>Run.screenWidth) || (activeMap.getHeight()*activeMap.getTileHeight()>Run.screenHeight))
-			{
-				mapToBig = true;
-			}
-			else
-			{
-				mapToBig = false;
-				saveValuesToXML();
-				sbg.enterState(Run.gameIndex);
-			}
+			saveValuesToXML();
+			sbg.enterState(Run.gameIndex);
 		}
 		
 		showHighScores = calcShowHighScores();

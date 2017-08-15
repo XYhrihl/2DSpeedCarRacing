@@ -16,7 +16,7 @@ public class Run extends StateBasedGame
 	
 	public static int menuIndex = 0;
 	public static int gameIndex = 1;
-	public static String gamename = "2DSpeedEngine";
+	public static String gamename = "2DSpeedCarRacing";
 	public static int screenWidth = 0;
 	public static int screenHeight = 0;
 	
