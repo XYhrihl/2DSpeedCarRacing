@@ -70,7 +70,10 @@ public class Menu extends BasicGameState
 	private TrueTypeFont ttfMediumFont;
 	private Font textFont;
 	private TrueTypeFont ttfTextFont;
+	private Font smallFont;
+	private TrueTypeFont ttfSmallFont;
 	private TextField txtField;
+	
 	
 	public Menu(int index)
 	{
@@ -94,6 +97,9 @@ public class Menu extends BasicGameState
 		
 		textFont = new Font(Font.MONOSPACED, Font.PLAIN, 24);
 		ttfTextFont = new TrueTypeFont(textFont, true);
+		
+		smallFont = new Font(Font.MONOSPACED, Font.BOLD, 14);
+		ttfSmallFont = new TrueTypeFont(smallFont, true);
 		txtField = new TextField(gc, ttfTextFont, Run.screenWidth/4*3+15, Run.screenHeight/8, Run.screenWidth/4-50, 36);
 		
 		allMaps = new ArrayList<SpeedMap>();
@@ -125,6 +131,14 @@ public class Menu extends BasicGameState
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException
 	{
 		g.setBackground(Run.backgroundColor);
+		
+		if(Run.screenWidth != 1920 || Run.screenHeight != 1080)
+		{
+			g.setFont(ttfSmallFont);
+			g.setColor(Color.orange);
+			g.drawString("Dieses Menü wurde für einen FullHD Bildschirm (1080p) entwickelt und könnte in anderen Auflösungen verzerrt sein.", 100, 2);
+			g.drawString("Dies beeinträchtigt jedoch nur das Aussehen und nicht die Funktionalität des Menüs", 100, 16);
+		}
 		
 		g.setFont(ttfButtonFont);
 		
@@ -217,7 +231,7 @@ public class Menu extends BasicGameState
 		g.setFont(ttfMediumFont);
 		g.drawString("Mapauswahl:", Run.screenWidth/3+24, y_mapNullpoint-42);
 		g.setFont(ttfTextFont);
-		g.drawString("Auflösung", Run.screenWidth/9*5+60, y_mapNullpoint-34);
+		g.drawString("Auflösung", Run.screenWidth/3*2-158, y_mapNullpoint-34);
 				
 		// the actual maps
 		for (SpeedMap m: allMaps)
@@ -235,7 +249,7 @@ public class Menu extends BasicGameState
 				g.setColor(Run.backgroundColor);
 			}
 			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*28);
-			g.drawString(m.getResolution(), Run.screenWidth/9*5+60, y_mapNullpoint+allMaps.indexOf(m)*28);
+			g.drawString(m.getResolution(), Run.screenWidth/3*2-160, y_mapNullpoint+allMaps.indexOf(m)*28);
 		}
 		// the map arrows
 		g.setColor(Color.white);
