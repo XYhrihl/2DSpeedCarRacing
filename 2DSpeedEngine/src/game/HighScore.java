@@ -2,6 +2,8 @@ package game;
 
 import java.util.Date;
 
+import gui.Run;
+
 public class HighScore 
 {
 	
@@ -57,6 +59,18 @@ public class HighScore
 	public int getDifficulty()
 	{
 		return this.difficulty;
+	}
+	
+	public String getDifShortcut()
+	{
+		if (difficulty==Run.DIF_EINFACH)
+			return "E";
+		else if (difficulty==Run.DIF_NORMAL)
+			return "N";
+		else if (difficulty==Run.DIF_SCHWER)
+			return "S";
+		else
+			return "X";
 	}
 	
 	public String toString()
