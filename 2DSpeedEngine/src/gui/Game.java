@@ -165,7 +165,7 @@ public class Game extends BasicGameState
 		finishedAni = new Animation(finishedimgs, 50);
 		finishedAniExclamation = new Animation(finishedimgsExclamation, 20);
 		
-		map = new SpeedMap("res/maps/basic_speedmap.tmx");
+		map = new SpeedMap("res/maps/basic_speedmap.tmx", 0);
 		player = new SpeedObj(map);
 		player.setDifficulty(difficulty);
 		highscore = new ArrayList<HighScore>();
@@ -657,11 +657,13 @@ public class Game extends BasicGameState
 	public void loadMaps()
 	{
 		File mapDir = new File("res/maps");
+		int index = 1;
 		for (File f: mapDir.listFiles())
 		{
 			try 
 			{
-				allMaps.add(new SpeedMap(f.toString()));
+				allMaps.add(new SpeedMap(f.toString(), index));
+				index ++;
 			} 
 			catch (SlickException e) 
 			{

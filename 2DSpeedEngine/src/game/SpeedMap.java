@@ -7,12 +7,14 @@ public class SpeedMap extends TiledMap
 {
 	private String mapName;
 	private String resolution;
+	private int number;
 	
-	public SpeedMap(String ref) throws SlickException 
+	public SpeedMap(String ref, int number) throws SlickException 
 	{
 		super(ref);
 		mapName = this.getMapProperty("Kartenname", "failed");
 		resolution = this.width*this.tileWidth+"x"+this.height*this.tileHeight;
+		this.number = number;
 	}
 	
 	public int[] getStartPos()
@@ -50,5 +52,10 @@ public class SpeedMap extends TiledMap
 	public String getResolution()
 	{
 		return this.resolution;
+	}
+	
+	public int getNumber()
+	{
+		return this.number;
 	}
 }

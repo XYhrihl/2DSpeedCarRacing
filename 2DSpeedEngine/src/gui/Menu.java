@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 import game.HighScore;
 import game.SpeedMap;
 
-// TODO BETA avoid writing long mapnames onto the resolution
+// TODO avoid writing long mapnames onto the resolution
 
 public class Menu extends BasicGameState
 {
@@ -236,20 +236,24 @@ public class Menu extends BasicGameState
 		// the actual maps
 		for (SpeedMap m: allMaps)
 		{
-			g.setColor(Color.white);
-			if (maphover == allMaps.indexOf(m))
+			if ((allMaps.indexOf(m)>=(mapPage-1)*maxMapsPerPage) && (allMaps.indexOf(m)<mapPage*maxMapsPerPage))
 			{
-				g.setColor(Run.hoverColor);
-				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+maphover*28+4, Run.screenWidth/3-48, 28);
 				g.setColor(Color.white);
+				if (maphover == allMaps.indexOf(m))
+				{
+					g.setColor(Run.hoverColor);
+					g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+(maphover%maxMapsPerPage)*28+4, Run.screenWidth/3-48, 28);
+					g.setColor(Color.white);
+				}
+				if (activeMap == m)
+				{
+					g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+(allMaps.indexOf(m)%maxMapsPerPage)*28+4, Run.screenWidth/3-48, 28);
+					g.setColor(Run.backgroundColor);
+				}
+				g.drawString(m.getNumber()+".", Run.screenWidth/3+28, y_mapNullpoint+(allMaps.indexOf(m)%maxMapsPerPage)*28);
+				g.drawString(m.getMapName(), Run.screenWidth/3+78, y_mapNullpoint+(allMaps.indexOf(m)%maxMapsPerPage)*28);
+				g.drawString(m.getResolution(), Run.screenWidth/3*2-160, y_mapNullpoint+(allMaps.indexOf(m)%maxMapsPerPage)*28);
 			}
-			if (activeMap == m)
-			{
-				g.fillRect(Run.screenWidth/3+24, y_mapNullpoint+allMaps.indexOf(m)*28+4, Run.screenWidth/3-48, 28);
-				g.setColor(Run.backgroundColor);
-			}
-			g.drawString(m.getMapName(), Run.screenWidth/3+28, y_mapNullpoint+allMaps.indexOf(m)*28);
-			g.drawString(m.getResolution(), Run.screenWidth/3*2-160, y_mapNullpoint+allMaps.indexOf(m)*28);
 		}
 		// the map arrows
 		g.setColor(Color.white);
@@ -300,9 +304,13 @@ public class Menu extends BasicGameState
 		g.drawLine(20, y_mapNullpoint+31, Run.screenWidth/3-24, y_mapNullpoint+31);
 		g.drawLine(20, y_mapNullpoint+33, Run.screenWidth/3-24, y_mapNullpoint+33);
 		g.drawLine(Run.screenWidth/3-128, y_mapNullpoint, Run.screenWidth/3-128, Run.screenHeight/16*15+4);
+		g.drawLine(Run.screenWidth/3-182, y_mapNullpoint, Run.screenWidth/3-182, Run.screenHeight/16*15+4);
+		g.drawLine(Run.screenWidth/3-236, y_mapNullpoint, Run.screenWidth/3-236, Run.screenHeight/16*15+4);
 		g.drawLine(72, y_mapNullpoint, 72, Run.screenHeight/16*15+4);
 		g.setFont(ttfTextFont);
 		g.drawString("Spieler:", 80, y_mapNullpoint);
+		g.drawString("Map", Run.screenWidth/3-174, y_mapNullpoint);
+		g.drawString("Dif", Run.screenWidth/3-230, y_mapNullpoint);
 		g.drawString("Zeit[s]", Run.screenWidth/3-124, y_mapNullpoint);
 		
 		// the actual highscores
@@ -312,6 +320,8 @@ public class Menu extends BasicGameState
 			{
 				g.drawString(String.valueOf(showHighScores.indexOf(h)+1)+".", 28, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
 				g.drawString(h.getName(), 80, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
+				g.drawString(h.getDifShortcut(), Run.screenWidth/3-216, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
+				g.drawString(getCurrentMapNumber(h.getMapName()), Run.screenWidth/3-172, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
 				g.drawString(String.valueOf(h.getTime()/1000)+"."+String.valueOf(h.getTime()%1000), Run.screenWidth/3-124, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+1)*28);
 				if (showHighScores.indexOf(h)%maxScoresPerPage!=maxScoresPerPage-1)
 					g.drawLine(24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+2)*28+4, Run.screenWidth/3-24, y_mapNullpoint+(showHighScores.indexOf(h)%maxScoresPerPage+2)*28+4);
@@ -377,7 +387,7 @@ public class Menu extends BasicGameState
 			if (mPosY<y_mapNullPoint-allMaps.size()*28)
 				maphover = -1;
 			else
-				maphover = (y_mapNullPoint-mPosY)/28;
+				maphover = ((y_mapNullPoint-mPosY)/28)+((mapPage-1)*maxMapsPerPage);
 		}
 		else
 		{
@@ -409,6 +419,18 @@ public class Menu extends BasicGameState
 		return myIndex;
 	}
 
+	public String getCurrentMapNumber(String mapname)
+	{
+		for (SpeedMap m: allMaps)
+		{
+			if(m.getMapName().equals(mapname))
+			{
+				return m.getNumber()+"";
+			}
+		}
+		return 0+"";
+	}
+	
 	@SuppressWarnings("unchecked")
 	public ArrayList<HighScore> calcShowHighScores()
 	{
@@ -559,11 +581,13 @@ public class Menu extends BasicGameState
 	public void loadMaps()
 	{
 		File mapDir = new File("res/maps");
+		int index = 1;
 		for (File f: mapDir.listFiles())
 		{
 			try 
 			{
-				allMaps.add(new SpeedMap(f.toString()));
+				allMaps.add(new SpeedMap(f.toString(), index));
+				index ++;
 			} 
 			catch (SlickException e) 
 			{
@@ -606,11 +630,20 @@ public class Menu extends BasicGameState
 			
 			// map selection
 			int y_mapNullpoint = Run.screenHeight/16*3;
-			if ((x>Run.screenWidth/3+24 && x<Run.screenWidth/3*2-24) && (y<Run.screenWidth/3-48 && y>y_mapNullpoint-4))
+			if ((x>Run.screenWidth/3+24 && x<Run.screenWidth/3*2-24) && (y<Run.screenHeight/4*3+y_mapNullpoint && y>y_mapNullpoint-4))
 			{
-				if (y<y_mapNullpoint+allMaps.size()*28+4)
+				if (y<y_mapNullpoint+(allMaps.size()-((mapPage-1)*maxMapsPerPage))*28+4)
 				{
-					activeMap = allMaps.get((y-y_mapNullpoint-4)/28);
+					int mapIndex = (y-y_mapNullpoint-4)/28+((mapPage-1)*maxMapsPerPage);
+					if (mapIndex >= mapPage*maxMapsPerPage)
+					{
+						mapIndex = mapPage*maxMapsPerPage-1;
+					}
+					if (mapIndex >= allMaps.size())
+					{
+						mapIndex = allMaps.size()-1;
+					}
+					activeMap = allMaps.get(mapIndex);
 				}
 			}
 			
